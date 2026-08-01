@@ -1,0 +1,661 @@
+أتش تي أم أل
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="كيفية نشر وكيل Hermes على Oracle VM مجانًا - الدليل العملي لـ OCI Free Tier ARM · 4 وحدات معالجة مركزية افتراضية / 24 جيجابايت مجانًا بشكل دائم · نظام يعمل على مدار 24 ساعة طوال أيام الأسبوع · جميع المزالق للاختبار الشخصي" name="description"/>
+<title>كيفية نشر وكيل Hermes على Oracle VM مجانًا · Nous Research</title>
+<style>
+:root{--bg1:#0f0c29;--bg2:#302b63;--bg3:#24243e;--card:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.08);--text:#e8e8e8;--dim:rgba(255,255,255,0.45);--accent:#6c8cff;--green:#4ade80;--orange:#fb923c;--red:#f87171;--purple:#a78bfa;--teal:#2dd4bf;--cyan:#22d3ee;--teal-dim:rgba(45,212,191,0.12);--cyan-dim:rgba(34,211,238,0.12)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));color:var(--text);min-height:100vh;line-height:1.7}
+.container{max-width:900px;margin:0 auto;padding:32px 24px 80px}
+
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--dim);text-decoration:none;font-size:14px;margin-bottom:16px;transition:color .2s}
+.back-link:hover{color:var(--text)}
+
+.hero{text-align:center;padding:40px 0 24px}
+.hero-badge{display:inline-block;background:var(--teal-dim);color:var(--teal);border:1px solid rgba(45,212,191,0.2);padding:4px 14px;border-radius:20px;font-size:12px;margin-bottom:16px;letter-spacing:1px}
+.hero h1{font-size:34px;font-weight:800;background:linear-gradient(135deg,#2dd4bf,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;line-height:1.3}
+.hero p{font-size:15px;color:var(--dim);max-width:620px;margin:0 auto}
+.hero .disclaimer{margin-top:14px;font-size:12px;color:var(--dim);border:1px solid rgba(45,212,191,0.15);background:rgba(45,212,191,0.05);border-radius:10px;padding:10px 16px;display:inline-block}
+
+.section{margin-bottom:40px}
+.section-title{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.section-title .num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--teal-dim);color:var(--teal);font-size:14px;font-weight:700;flex-shrink:0}
+.section-title .p-icon{background:var(--cyan-dim);color:var(--cyan)}
+.section-title .r-icon{background:rgba(248,113,113,0.1);color:var(--red)}
+.section-desc{font-size:14px;color:var(--dim);margin-bottom:14px}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle}
+.badge.ok{background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,0.15)}
+.badge.need{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.15)}
+.badge.teal{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(45,212,191,0.15)}
+.badge.cyan{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(34,211,238,0.15)}
+.badge.warn{background:rgba(251,191,36,0.1);color:var(--orange);border:1px solid rgba(251,191,36,0.15)}
+
+.step-list{counter-reset:step;display:flex;flex-direction:column;gap:10px}
+.step-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;position:relative;padding-left:60px}
+.step-item::before{counter-increment:step;content:counter(step);position:absolute;left:18px;top:20px;width:26px;height:26px;border-radius:8px;background:var(--teal-dim);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.step-item h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.step-item p{font-size:13px;color:var(--dim);line-height:1.6}
+.step-item code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:4px;font-size:12px;color:#2dd4bf}
+.step-item .cmd{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 16px;margin-top:6px;font-family:'Consolas','Courier New',monospace;font-size:13px;color:#b8c7ff;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+.step-item .cmd .c{color:rgba(255,255,255,0.3)}
+.step-item a{color:var(--accent)}
+.step-item strong{color:var(--text)}
+.step-item ul{margin:4px 0;padding-left:18px;font-size:13px;color:var(--dim)}
+.step-item li{margin-bottom:2px}
+
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.feature-card .f-icon{font-size:22px;margin-bottom:8px}
+.feature-card h3{font-size:14px;font-weight:600;margin-bottom:4px}
+.feature-card p{font-size:13px;color:var(--dim);line-height:1.6}
+
+.compare-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+.compare-table th{text-align:left;padding:10px 14px;background:rgba(45,212,191,0.06);color:var(--teal);font-weight:600;border-bottom:1px solid var(--border)}
+.compare-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--dim)}
+.compare-table tr td:first-child{color:var(--text);font-weight:500}
+
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow-x:auto;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:10px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.04)}
+th{color:var(--dim);font-weight:600;background:rgba(255,255,255,0.02)}
+td{color:var(--text)} tr:last-child td{border-bottom:none}
+td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underline}
+
+.link-block{background:var(--teal-dim);border:1px solid rgba(45,212,191,0.1);border-radius:14px;padding:20px 24px;margin-bottom:12px}
+.link-block h3{font-size:15px;font-weight:600;margin-bottom:10px;color:var(--teal)}
+.link-block .link-row{display:flex;align-items:center;padding:6px 0;font-size:13px;gap:8px}
+.link-block .link-row .label{color:var(--dim);min-width:80px;flex-shrink:0}
+.link-block .link-row a{color:var(--accent);text-decoration:none}
+.link-block .link-row a:hover{text-decoration:underline}
+
+.tip{background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.12);border-radius:12px;padding:14px 18px;font-size:13px;color:var(--orange);margin-top:10px}
+.tip.info{background:rgba(108,140,255,0.07);border-color:rgba(108,140,255,0.12);color:var(--accent)}
+.tip.green{background:rgba(74,222,128,0.07);border-color:rgba(74,222,128,0.12);color:var(--green)}
+.tip.cyan{background:var(--cyan-dim);border-color:rgba(34,211,238,0.12);color:var(--cyan)}
+.tip.red{background:rgba(248,113,113,0.07);border-color:rgba(248,113,113,0.12);color:var(--red)}
+
+.toc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:32px}
+.toc a{font-size:12px;color:var(--dim);text-decoration:none;padding:4px 12px;border-radius:8px;border:1px solid var(--border);transition:all .2s}
+.toc a:hover{color:var(--text);border-color:rgba(255,255,255,0.15)}
+
+.arch-flow{display:flex;align-items:center;gap:10px;font-family:'SF Mono','Consolas',monospace;font-size:12px;color:var(--dim);flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+.arch-flow span{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;white-space:nowrap}
+.arch-flow .arrow{background:none;border:none;color:var(--teal);padding:0 2px;font-size:14px}
+
+.footer{text-align:center;padding:32px 0 0;font-size:12px;color:rgba(255,255,255,0.2);border-top:1px solid rgba(255,255,255,0.04);margin-top:32px}
+.footer a{color:rgba(255,255,255,0.3);text-decoration:none}
+.footer a:hover{color:rgba(255,255,255,0.5)}
+
+@media(max-width:640px){
+  .container{padding:20px 16px 60px}
+  .hero h1{font-size:26px}
+  .step-item{padding:16px 16px 16px 48px}
+  .step-item::before{left:14px;top:16px;width:22px;height:22px;font-size:12px}
+  .arch-flow{gap:6px}
+  .arch-flow span{padding:4px 8px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:18px"><select onchange="location.href=this.value" style="background:var(--card,#171e2e);color:var(--text,#e8e8e8);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit"><option value="https://forumdata-collab.github.io/hermes-oracle-guide/en/">English (US)</option><option value="https://forumdata-collab.github.io/hermes-oracle-guide/zh-CN/">简体中文</option><option value="https://forumdata-collab.github.io/hermes-oracle-guide/zh-TW/">繁體中文（台灣）</option><option value="https://forumdata-collab.github.io/hermes-oracle-guide/">繁體中文（香港）</option><option value="https://forumdata-collab.github.io/hermes-oracle-guide/ar/" selected>العربية</option></select><a href="https://ko-fi.com/forumdata" target="_blank" style="display:inline-flex;align-items:center;gap:10px;padding:12px 28px;background:#ff5e5b;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.47.06 8.529-1.723 8.649-4.916zm-11.638 8.978c-2.252 0-4.078-1.826-4.078-4.078s1.826-4.078 4.078-4.078 4.078 1.826 4.078 4.078-4.078 4.078z"/></svg>☕ 請我喝杯咖啡</a></div>
+<div class="container">
+<a class="back-link" href="https://forumdata-collab.github.io/">← العودة إلى الصفحة الرئيسية</a>
+<div class="hero">
+<div class="hero-badge">أبحاث Nous · معهد ماساتشوستس للتكنولوجيا مفتوحة المصدر · 2026</div>
+<h1>كيفية نشر وكيل Hermes على Oracle VM مجانًا</h1>
+<p>OCI Free Tier ARM في الممارسة العملية · 4 vCPU / 24GB RAM مجانًا إلى الأبد · نظام تشغيل 24/7<br/>وكيل الذكاء الاصطناعي السحابي بدون تكلفة، تم التخلص من جميع المخاطر بالنسبة لك</p>
+<div class="disclaimer">⚡ يعتمد هذا الدليل على القياس الفعلي بتاريخ 2026-08-01. يجب الحفاظ على جميع الموارد ضمن الحصة "المجانية دائمًا"، وسيتم فرض رسوم في حالة تجاوزها.</div>
+</div>
+جدول المحتويات
+<div class="toc">
+<a href="#arch">0 الهندسة المعمارية</a>
+<a href="#signup">1 تسجيل حساب</a>
+<a href="#vm">2 إنشاء جهاز افتراضي</a>
+<a href="#ssh">3 تهيئة SSH</a>
+<a href="#install">4 تثبيت هيرميس</a>
+<a href="#setup">5 إعدادات التهيئة</a>
+<a href="#api">6 نموذج مفتاح API</a>
+<a href="#gateway">7 بوابة النظام</a>
+<a href="#telegram">8 روبوتات برقية</a>
+<a href="#soul">9 ردود باللغة الصينية</a>
+<a href="#firewall">10 جدار الحماية</a>
+<a href="#commands">11 أمر فحص سريع</a>
+<a href="#faq">12 جمع الدوس</a>
+<a href="#webui">13WebUI</a>
+<a href="#backup">14 صيانة النسخ الاحتياطي</a>
+</div>
+0. الهندسة المعمارية
+<div class="section" id="arch">
+<h2 class="section-title"><span class="num">0</span>كيفية النشر (نظرة عامة على البنية)</h2>
+<p class="section-desc">Hermes Agent هو إطار عمل مفتوح المصدر للذكاء الاصطناعي (بروتوكول MIT) تم تطويره بواسطة Nous Research - فهو يقرأ الملفات ويكتب التعليمات البرمجية وينفذ الأوامر ويتحكم في المتصفحات على الجهاز. إنه غير مرتبط بأي مصنع للنماذج ويحتوي على بوابة Telegram مدمجة. ضعه على جهاز VM المجاني الدائم من Oracle وسيصبح وكيل سحابي يعمل بالذكاء الاصطناعي على مدار 24 ساعة طوال أيام الأسبوع دون انقطاع.</p>
+<div class="arch-flow">
+<span>رسائل برقية</span><span class="arrow">→</span>
+<span>بوابة هيرميس</span><span class="arrow">→</span>
+<span>واجهة برمجة تطبيقات ديب سيك</span><span class="arrow">→</span>
+<span>رد الذكاء الاصطناعي</span><span class="arrow">→</span>
+<span>دردشة برقية</span>
+</div>
+<p style="font-size:13px;color:var(--dim);text-align:center;margin-bottom:20px">إدارة خدمة systemd: التشغيل التلقائي عند التمهيد، وإعادة التشغيل تلقائيًا بعد التعطل، وفصل SSH، كل ذلك يعمل كالمعتاد.</p>
+<div class="feature-grid">
+<div class="feature-card"><div class="f-icon">💰</div><h3>مجانا إلى الأبد</h3><p>ARM 4 vCPU + ذاكرة وصول عشوائي (RAM) سعة 24 جيجابايت + قرص سعة 200 جيجابايت، بدون رسوم بطاقة ائتمان طويلة الأجل</p></div>
+<div class="feature-card"><div class="f-icon">🔄</div><h3>حرية النموذج</h3><p>يمكنك الاختيار من بين DeepSeek / OpenAI / Anthropic / Google، ما عليك سوى تغيير المورد وتغيير التكوين.</p></div>
+<div class="feature-card"><div class="f-icon">💬</div><h3>برقية الأصلي</h3><p>بوابة مدمجة، وهي خدمة نظام تقوم بالرد تلقائيًا على مدار الساعة طوال أيام الأسبوع</p></div>
+<div class="feature-card"><div class="f-icon">🖥️</div><h3>صفر القلق التشغيلي</h3><p>إعادة التشغيل التلقائي بعد التعطل + سجل Journald + النسخ الاحتياطي عن بعد، لا يمكنك حتى النوم.</p></div>
+</div>
+</div>
+1. سجل
+<div class="section" id="signup">
+<h2 class="section-title"><span class="num">1</span>قم بالتسجيل للحصول على حساب Oracle Cloud Free Tier</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>انتقل إلى صفحة التسجيل</h3>
+<div class="cmd">https://signup.cloud.Oracle.com/</div>
+<p>املأ اسمك وبريدك الإلكتروني والبلد/المنطقة.</p>
+</div>
+<div class="step-item">
+<h3>اختر المنطقة الرئيسية<span class="badge need">مفتاح</span></h3>
+<p>تأكد من الاختيار<strong>يدعم مثيلات Ampere ARM</strong>المنطقة (لا يمكن تغييرها بعد المنطقة الرئيسية):<br/>أوساكا / طوكيو / باريس / فرانكفورت / أشبورن / فينيكس كلها مدعومة.</p>
+<div class="tip red">إذا اخترت المنطقة الرئيسية الخاطئة، فلن تكون هناك مثيلات ARM - وسيحدد هذا ما إذا كان سيكون لديك 4 أجهزة خالية من vCPU لاحقًا.</div>
+</div>
+<div class="step-item">
+<h3>التحقق من بطاقة الائتمان</h3>
+<p>مطلوب بطاقة ائتمان أو خصم صالحة. ستقوم Oracle بخصم العقد مؤقتًا<strong>1 دولار أمريكي</strong>التحقق والعودة بعد بضعة أيام.<strong>لا يتم قبول البطاقات الافتراضية أو المدفوعة مسبقًا.</strong></p>
+</div>
+<div class="step-item">
+<h3>في انتظار التنشيط</h3>
+<p>عادة بضع دقائق إلى بضع ساعات. قم بتسجيل الدخول بعد تلقي رسالة التنشيط الإلكترونية<code>cloud.oracle.com</code>.</p>
+</div>
+</div>
+<div class="tip warn" style="margin-top:12px">
+<strong>⚠️ مجاني لا يعني غير محدود:</strong>الموارد التي تتجاوز الحد "المجاني دائمًا" ستتحمل رسومًا. يوصى بالترقية إلى Pay-As-You-Go (لا يزال 0 دولارًا، ولكن يمكن حلها عندما تكون السعة غير كافية، وهو أيضًا ترياق لنقص السعة باستخدام ARM المجاني).</div>
+</div>
+2. إنشاء جهاز افتراضي
+<div class="section" id="vm">
+<h2 class="section-title"><span class="num">2</span>إنشاء مثيل حوسبة OCI (VM)</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>افتح صفحة الإنشاء</h3>
+<p>وحدة تحكم OCI →<strong>حساب → المثيلات → إنشاء مثيل</strong>. يجب أن تعرض المنطقة التسمية "المؤهلة مجانًا دائمًا".</p>
+</div>
+<div class="step-item">
+<h3>اختيار ملف الصورة</h3>
+<p>تغيير الصورة → اختيار<strong>أوبونتو 22.04 LTS أو 24.04 LTS</strong>.</p>
+</div>
+<div class="step-item">
+<h3>اختر مواصفات المثيل<span class="badge ok">يوصى باستخدام ARM Ampere</span></h3>
+<div class="table-wrap">
+<table>
+<tr><th>يخطط</th><th>مواصفة</th><th>اقتراح</th></tr>
+<tr><td>الذراع أمبير A1</td><td><code>VM.Standard.A1.Flex</code>- 4 وحدات معالجة مركزية + 24 جيجا بايت رام</td><td class="ok">✅ القوة الرئيسية (التكوين الأكثر سخاءً للطبقة المجانية)</td></tr>
+<tr><td>x86مايكرو</td><td><code>VM.Standard.E2.1.Micro</code>— 1/8 وحدة المعالجة المركزية + 1 جيجابايت</td><td class="no">❌ رفيع جدًا، ولا يصلح إلا للاختبار</td></tr>
+</table>
+</div>
+</div>
+<div class="step-item">
+<h3>مفتاح الشبكة + SSH</h3>
+<p>استخدم شبكة VCN/الشبكة الفرعية الافتراضية وحدد "تعيين عنوان IPv4 عام". حدد SSH "لصق المفاتيح العامة" والصق مفتاحك العام (قم بإنشائه إذا لم يكن متاحًا محليًا):</p>
+<div class="cmd">ssh-keygen -t rsa -b 4096 -C "your_email@example.com"</div>
+</div>
+<div class="step-item">
+<h3>قم بزيادة حجم قرص التمهيد إلى 200 جيجابايت<span class="badge teal">قبعة مجانية</span></h3>
+<p>عرض الخيارات المتقدمة → حجم التمهيد → حجم مخصص → أدخل<strong>200</strong>(غيغابايت). الافتراضي هو 50 جيجابايت. ليس من المناسب توسيعه أولاً قبل التنزيل.</p>
+</div>
+<div class="step-item">
+<h3>إنشاء وتذكر IP العام</h3>
+<p>انتظر حتى تتغير الحالة إلى "قيد التشغيل" وقم بتسجيل عنوان IP العام الأدنى (على سبيل المثال<code>130.123.45.67</code>).</p>
+</div>
+</div>
+</div>
+3. سش
+<div class="section" id="ssh">
+<h2 class="section-title"><span class="num">3</span>قم بتوصيل VM وتهيئة النظام</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>اتصال SSH</h3>
+<div class="cmd">ssh -i ~/.ssh/id_rsa ubuntu@&lt;your IP العام&gt;</div>
+<p>نظام المستخدم الافتراضي لأوبونتو<code>ubuntu</code>؛ أوراكل لينكس أولاً<code>opc</code>.</p>
+</div>
+<div class="step-item">
+<h3>تحديث النظام</h3>
+<div class="cmd">Sudo apt update &amp;&amp; sudo apt ترقية -y</div>
+</div>
+<div class="step-item">
+<h3>تثبيت الأدوات الأساسية + تحديد المنطقة الزمنية</h3>
+<div class="cmd">sudo apt install -y curl git wget nano vim ufw build-essential
+sudo timedatectl set-timezone Asia/Hong_Kong</div>
+</div>
+<div class="step-item">
+<h3>قم بتشغيل جدار الحماية UFW (الطبقة الأولى)</h3>
+<div class="cmd">Sudo ufw الافتراضي ينكر الوارد
+Sudo ufw الافتراضي يسمح بالخروج
+سودو ufw يسمح بـ ssh
+سودو ufw يسمح بـ 80/tcp
+سودو ufw يسمح بـ 443/tcp
+تمكين سودو ufw</div>
+<p>⚠️ تذكر:<strong>أوراكل لديها طبقتين من جدار الحماية</strong>— بالإضافة إلى UFW/iptables داخل الجهاز الظاهري، توجد أيضًا قائمة الأمان الخاصة بـ OCI VCN (تمت مناقشتها في القسم 10). يجب فتح كلا الطابقين أولاً.</p>
+</div>
+</div>
+</div>
+4. التثبيت
+<div class="section" id="install">
+<h2 class="section-title"><span class="num">4</span>تثبيت وكيل هيرميس</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>التثبيت بنقرة واحدة</h3>
+<div class="cmd">حليقة -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | سحق</div>
+<p>الإكمال التلقائي: تثبيت uv → إنشاء Python 3.11 venv → تثبيت أكثر من 100 تبعية → تثبيت Node.js → تثبيت cua-driver.</p>
+</div>
+<div class="step-item">
+<h3>إعادة تحميل + التحقق</h3>
+<div class="cmd">المصدر ~/.bashrc
+هيرميس--النسخة</div>
+<p>إلى رقم الإصدار (على سبيل المثال<code>hermes 0.14.0</code>) يعني النجاح. مسار التثبيت هو<code>~/.local/bin/hermes</code>، المنصوص عليها<code>~/.hermes/</code>.</p>
+</div>
+</div>
+<div class="tip red" style="margin-top:12px">
+<strong>⚠️ حفرة الاختبار الفعلي لـ ARM: فشل تنزيل HTTP/2.</strong>قد يتم الإبلاغ عن البرنامج النصي للتثبيت عند تنزيل Node.js<code>curl: (92) HTTP/2 stream error</code>. حل:<code>Ctrl+C</code>الإنهاء → تنزيل Node.js يدويًا لـ ARM باستخدام HTTP/1.1:<div class="cmd" style="margin-top:6px">حليقة --http1.1 -L "https://nodejs.org/dist/v22.11.0/node-v22.11.0-linux-arm64.tar.gz" -o /tmp/node.tar.gz
+mkdir -p ~/.hermes/node
+القطران -xzf /tmp/node.tar.gz -C ~/.hermes/node --strip-components=1
+rm /tmp/node.tar.gz</div>إذا قمت بإعادة تنفيذ البرنامج النصي للتثبيت، فسيتم تخطي Node.js الذي تم تنزيله.</div>
+</div>
+5. الإعداد
+<div class="section" id="setup">
+<h2 class="section-title"><span class="num">5</span>الإعدادات الأولية (معالج الإعداد)</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>بدء المعالج</h3>
+<div class="cmd">إعداد هيرميس</div>
+</div>
+<div class="step-item">
+<h3>الخيارات في لمحة</h3>
+<ul>
+<li>وضع الإعداد: إعداد سريع (سريع) أو إعداد مخصص (مفصل)</li>
+<li>الواجهة الخلفية للمحطة:<strong>الخلفية المحلية</strong></li>
+<li>منصة المراسلة: حدد "تخطي - الإعداد لاحقًا" وقم بإعداد Telegram بشكل منفصل (القسم 7-8)</li>
+</ul>
+</div>
+<div class="step-item">
+<h3>ينهي</h3>
+<p>إعداد الكتابة<code>~/.hermes/config.yaml</code>، المفتاح مكتوب<code>~/.hermes/.env</code>.</p>
+</div>
+</div>
+</div>
+6. مفتاح API
+<div class="section" id="api">
+<h2 class="section-title"><span class="num">6</span>تعيين موفر النموذج ومفتاح API</h2>
+<p class="section-desc">هيرميس تدعم أي مورد. ما يلي يستخدم DeepSeek كمثال (أداء عالي التكلفة، لا يتطلب الدفع في الخارج).</p>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>أو مفتاح DeepSeek API</h3>
+<p><code>platform.deepseek.com</code>→ التسجيل/تسجيل الدخول → مفاتيح واجهة برمجة التطبيقات → إنشاء مفتاح (<code>sk-</code>بداية). المستخدمين الجدد لديهم حصة مجانية.</p>
+</div>
+<div class="step-item">
+<h3>قم بتأكيد ملف config.yaml</h3>
+<div class="cmd">نانو ~/.hermes/config.yaml</div>
+<div class="cmd">المزود: Deepseek
+الموديل: Deepseek-v4-pro
+base_url: https://api.deepseek.com/v1</div>
+</div>
+<div class="step-item">
+<h3>اكتب إلى .env</h3>
+<div class="cmd">DEEPSEEK_API_KEY=sk - مفتاح البحث العميق الخاص بك</div>
+</div>
+<div class="step-item">
+<h3>التحقق من الاتصال</h3>
+<div class="cmd">دردشة هيرميس</div>
+<p>أدخل "مرحبًا" واستقبل الرد بنجاح.<code>Ctrl+C</code>يترك.</p>
+</div>
+</div>
+<div class="tip red" style="margin-top:12px">
+<strong>⚠️ المأزق: هناك نوعان من مفتاح DeepSeek!</strong>قد يكون الأشخاص الذين استخدموا Claude Code + DeepSeek مخطئين - أحدهما يستخدم بواسطة Claude Code<code>ANTHROPIC_AUTH_TOKEN</code>، أحدهما هو المفتاح الأصلي لمنصة DeepSeek،<strong>كلاهما لهما نفس التنسيق ولكن بقيم مختلفة</strong>. استخدم المفتاح الأصلي للمنصة؛ الإبلاغ 401 يعني خطأ رئيسي. اختبار سريع:<div class="cmd" style="margin-top:6px">حليقة https://api.deepseek.com/v1/chat/completions \
+  -H "التفويض: حامل المفتاح هو مفتاحك" \
+  -H "نوع المحتوى: application/json" \
+  -d '{"model": "deepseek-v4-pro"، "الرسائل": [{"role": "user"، "content": "hi"}]}'</div>200 = صالح، 401 = غير صالح.</div>
+</div>
+7. نظام البوابة د
+<div class="section" id="gateway">
+<h2 class="section-title"><span class="num">7</span>تثبيت بوابة هيرميس (خدمة systemd)</h2>
+<p class="section-desc">على خادم Linux، يجب على البوابة تشغيل systemd من أجل: البدء التلقائي عند التمهيد، وإعادة التشغيل التلقائي عند التعطل، والبقاء على اتصال على مدار الساعة طوال أيام الأسبوع، ومواصلة التشغيل بعد قطع اتصال SSH.</p>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>تثبيت البوابة</h3>
+<div class="cmd">تثبيت بوابة هيرميس</div>
+</div>
+<div class="step-item">
+<h3>إنشاء ملف خدمة systemd يدويًا<span class="badge need">الخطوات الأساسية</span></h3>
+<p>⚠️<strong>المأزق الأكبر هو أن systemd لا يستطيع قراءة ملفات .env!</strong>يجب كتابة متغيرات البيئة مباشرة في ملف الخدمة، وإلا ستكون جلسة الروبوت "لم يتم تمكين منصات المراسلة".</p>
+<div class="cmd">سودو نانو /etc/systemd/system/hermes-gateway.service</div>
+<div class="cmd">[الوحدة]
+الوصف=خدمة بوابة هيرميس
+بعد=network.target
+
+[الخدمة]
+النوع=بسيط
+المستخدم = أوبونتو
+دليل العمل=/home/ubuntu
+ExecStart=/home/ubuntu/.local/bin/hermes البوابة
+إعادة التشغيل = دائمًا
+إعادة التشغيل = 10
+البيئة=PATH=/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
+
+# المفتاح: systemd لا يقرأ .env، ويجب كتابة متغيرات البيئة هناك مباشرة!
+البيئة=DEEPSEEK_API_KEY=sk-مفتاح البحث العميق الخاص بك
+البيئة=TELEGRAM_BOT_TOKEN=رمز الروبوت الخاص بك
+البيئة=TELEGRAM_ALLOWED_USERS=معرف Telegram الرقمي الخاص بك
+البيئة=TELEGRAM_HOME_CHANNEL=معرف Telegram الرقمي الخاص بك
+البيئة=GATEWAY_ALLOW_ALL_USERS=صحيح
+
+[تثبيت]
+WantedBy=multi-user.target</div>
+<p>النقاط الرئيسية للتعديل:<code>User</code>/<code>WorkingDirectory</code>/<code>ExecStart</code>التغيير وفقًا للمسار الفعلي؛ خمسة<code>Environment=</code>يجب ملء كل شيء بالقيم الحقيقية.</p>
+</div>
+<div class="step-item">
+<h3>ابدأ + ابدأ عند التمهيد</h3>
+<div class="cmd">sudo systemctl daemon-reload
+يقوم sudo systemctl بتمكين بوابة هيرميس
+Sudo systemctl ابدأ بوابة هيرميس</div>
+</div>
+<div class="step-item">
+<h3>التحقق + قراءة السجلات</h3>
+<div class="cmd">سودو systemctl حالة بوابة هيرميس
+Sudo Journalctl -u Hermes-gateway -f</div>
+<p>عرض الحالة<code>active (running)</code>، يرى السجل<code>✓ telegram connected</code>هذا هو النجاح.</p>
+</div>
+<div class="step-item">
+<h3>إعداد دوران السجل (لمنع انفجار القرص)</h3>
+<div class="cmd">سودو نانو /etc/systemd/journald.conf</div>
+<div class="cmd">SystemMaxUse=200M
+SystemKeepFree=500M
+RuntimeMaxUse=100M</div>
+<div class="cmd">سودو systemctl إعادة تشغيل systemd-journald</div>
+</div>
+</div>
+<div class="tip green" style="margin-top:12px">
+<strong>الدروس المستفادة من الاختبار الفعلي (جهازنا):</strong>لتعديل ملف الخدمة يمكنك كتابته محليا وتحميله أولا -<code>sudo cp</code>يدخل<code>/etc/systemd/system/</code>مرة أخرى<code>daemon-reload</code>فقط يجب أن. فضلاً عن ذلك<strong>قبل استخدام systemd على الروبوت، يجب عليك إنهاء عملية الاقتراع القديمة.</strong>وإلا فسوف يقوم Telegram بالإبلاغ عن تعارض 409 (يتنافس تحديثان على نفس الروبوت في نفس الوقت). أخيرا<code>hermes git pull --rebase</code>تذكر إعادة تشغيل الخدمة بعد التحديث.</div>
+</div>
+8. برقية
+<div class="section" id="telegram">
+<h2 class="section-title"><span class="num">8</span>الوصول إلى بوت تيليجرام</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>قم ببناء روبوت مع @BotFather</h3>
+<p>بحث برقية<a href="https://t.me/BotFather" target="_blank">@BotFather</a>→<code>/newbot</code>→ تعيين الاسم/اسم المستخدم →<strong>رمز بوت</strong>(شكل<code>123456:ABC-DEF1234ghiJKL</code>). قم بتخزينه بشكل صحيح وتجنب التسرب.</p>
+</div>
+<div class="step-item">
+<h3>احصل على معرف Telegram الرقمي الخاص بك</h3>
+<p>يبحث<a href="https://t.me/userinfobot" target="_blank">@userinfobot</a>→<code>/start</code>→ معرف رقمي (على سبيل المثال<code>123456789</code>).</p>
+</div>
+<div class="step-item">
+<h3>تحديث ملفات خدمة systemd</h3>
+<div class="cmd">سودو نانو /etc/systemd/system/hermes-gateway.service</div>
+<div class="cmd">البيئة=TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghiJKL
+البيئة=TELEGRAM_ALLOWED_USERS=123456789
+البيئة=TELEGRAM_HOME_CHANNEL=123456789
+البيئة=GATEWAY_ALLOW_ALL_USERS=صحيح</div>
+<div class="cmd">sudo systemctl daemon-reload
+سودو systemctl إعادة تشغيل بوابة هيرميس</div>
+</div>
+<div class="step-item">
+<h3>يؤكد</h3>
+<p>سجل انظر<code>✓ telegram connected</code>، ثم تحدث إلى الروبوت الخاص بك على Telegram واحصل على رد.</p>
+</div>
+</div>
+<div class="tip info" style="margin-top:12px">
+<strong>نصائح لاستكشاف الأخطاء وإصلاحها:</strong>ليس لدى الروبوت أي استجابة → ①<code>sudo systemctl status hermes-gateway</code>تشغيل النظام → ② السجل<code>journalctl -u hermes-gateway -f</code>→ ③ انظر<code>No messaging platforms enabled</code>= لم تتم قراءة الرمز المميز → ④ تحقق من بيئة ملف الخدمة → ⑤<code>daemon-reload</code>+<code>restart</code>→ ⑥ تحقق مرة أخرى.</div>
+</div>
+9.SOUL.md
+<div class="section" id="soul">
+<h2 class="section-title"><span class="num">9</span>ضبط الرد الصيني (SOUL.md)</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>تحرير SOUL.md</h3>
+<div class="cmd">cp ~/.hermes/SOUL.md ~/.hermes/SOUL.md.backup
+نانو ~/.hermes/SOUL.md</div>
+<p>أضف قواعد اللغة في الأعلى:</p>
+<div class="cmd">قاعدة اللغة الحرجة: يجب عليك الرد باللغة الصينية (繁体中文) في جميع الأوقات.
+المستخدم يتحدث الصينية. لا تستخدم اللغة الإنجليزية أبدًا ما لم يطلب المستخدم ذلك صراحةً.</div>
+</div>
+<div class="step-item">
+<h3>(اختياري) أدخل المعرفة بالمشروع</h3>
+<p>يمكن لـ SOUL.md كتابة الهوية والمهارات وبنية المشروع ومواصفات الترميز والأوامر شائعة الاستخدام - وتصبح "الذاكرة طويلة المدى" لشركة Hermes ويتم الرجوع إليها في كل محادثة.</p>
+</div>
+<div class="step-item">
+<h3>إعادة التشغيل تصبح نافذة المفعول</h3>
+<div class="cmd">سودو systemctl إعادة تشغيل بوابة هيرميس</div>
+<p>بعد تغيير SOUL.md، يجب عليك إعادة تشغيل البوابة حتى تدخل حيز التنفيذ.</p>
+</div>
+</div>
+</div>
+10. جدار الحماية
+<div class="section" id="firewall">
+<h2 class="section-title"><span class="num">10</span>جدار الحماية وقواعد الأمان (يجب تشغيل كلتا الطبقتين)</h2>
+<p class="section-desc">أوراكل VM لديها<strong>جدار الحماية ذو طبقتين</strong>: قائمة الأمان الخاصة بـ OCI VCN (الطبقة السحابية) + UFW (طبقة النظام) داخل المثيل. لن يُسمح بمرور كلا الطابقين حتى يتم إخلاءهما أولاً.</p>
+<h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎10.1 قائمة أمان OCI (الطبقة السحابية)</h3>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>فتح القواعد الواردة</h3>
+<p>وحدة تحكم OCI ← الشبكات ← شبكات السحابة الافتراضية ← حدد VCN ← الشبكات الفرعية ← قوائم الأمان ← قائمة الأمان الافتراضية ← إضافة قواعد الدخول:</p>
+<div class="table-wrap">
+<table>
+<tr><th>نوع المصدر</th><th>المصدر CIDR</th><th>ميناء</th><th>يستخدم</th></tr>
+<tr><td>CIDR</td><td>0.0.0.0/0</td><td>إثنان وعشرون</td><td>سش</td></tr>
+<tr><td>CIDR</td><td>0.0.0.0/0</td><td>80</td><td>HTTP</td></tr>
+<tr><td>CIDR</td><td>0.0.0.0/0</td><td>443</td><td>HTTPS</td></tr>
+</table>
+</div>
+<p>إذا قمت بتثبيت WebUI، فستحتاج إلى فتح المنفذ المقابل (مثل 8787).</p>
+</div>
+</div>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎10.2 جدار الحماية المثيل (طبقة النظام)</h3>
+<div class="cmd">حالة سودو ufw مطول</div>
+<p style="font-size:13px;color:var(--dim)">يجب أن نرى<code>22 / 80 / 443 ALLOW IN</code>. قد يحتاج مستخدمو Oracle Linux إلى تغيير iptables مباشرةً إذا لم يستجب UFW.</p>
+<div class="tip red" style="margin-top:12px">
+<strong>⚠️ دروس من الاختبار الفعلي: "NSG ≠ iptables" من OCI.</strong>إذا قمت بفتح قائمة الأمان في وحدة التحكم ولكنك لا تزال غير قادر على الاتصال، فمن الأفضل التحقق من iptables في VM - تأكد أولاً مما إذا كانت طبقة OCI (قائمة الأمان / NSG) مسموحة أم لا. الطابقين مستقلين.<strong>أي طبقة تمنعها سوف تفشل.</strong>. Zhong You: في كثير من الأحيان تم احتلال 443 بواسطة خدمات أخرى (مثل وكيل صندوق الغناء). قبل فتح المنفذ<code>ss -tlnp</code>نلقي نظرة على الموقع أدناه.</div>
+</div>
+11. أمر بالفحص السريع
+<div class="section" id="commands">
+<h2 class="section-title"><span class="num">11</span>ورقة الغش للأوامر المشتركة</h2>
+<div class="table-wrap">
+<table>
+<tr><th>تعليمات</th><th>تأثير</th></tr>
+<tr><td><code>hermes chat</code></td><td>ابدأ وضع المحادثة الطرفية</td></tr>
+<tr><td><code>hermes --tui</code></td><td>بدء تشغيل واجهة TUI</td></tr>
+<tr><td><code>hermes setup</code></td><td>قم بتشغيل معالج الإعداد مرة أخرى</td></tr>
+<tr><td><code>hermes update</code></td><td>تحديث وكيل Hermes (للإصدار المصدر)<code>git pull --rebase</code>)</td></tr>
+<tr><td><code>hermes gateway install / status / restart</code></td><td>تثبيت البوابة/الحالة/إعادة التشغيل</td></tr>
+<tr><td><code>hermes cron list / status</code></td><td>قائمة/عرض المهام المجدولة</td></tr>
+<tr><td><code>sudo systemctl status hermes-gateway</code></td><td>التحقق من حالة الخدمة</td></tr>
+<tr><td><code>sudo systemctl enable hermes-gateway</code></td><td>ابدأ تلقائيًا عند التمهيد</td></tr>
+<tr><td><code>sudo journalctl -u hermes-gateway -f</code></td><td>عرض سجلات الخدمة في الوقت الحقيقي</td></tr>
+<tr><td><code>tail -f ~/.hermes/logs/gateway.log</code></td><td>عرض سجلات هيرميس على الفور</td></tr>
+<tr><td><code>df -h / free -h</code></td><td>استخدام القرص/الذاكرة</td></tr>
+</table>
+</div>
+</div>
+12. خطوة على الفخ
+<div class="section" id="faq">
+<h2 class="section-title"><span class="num">12</span>مجموعة من المزالق (جميعها تم اختبارها شخصيا)</h2>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">س: يُبلغ الروبوت عن تعارض 409 بعد تشغيل systemd؟</p>
+<p style="font-size:13px;color:var(--dim)"><strong>سبب:</strong>لا تزال عملية الاقتراع القديمة تتنافس مع البوابة للحصول على رمز الروبوت.<br/><strong>يحل:</strong>قبل البدء بالخدمة<code>pkill -f "hermes"</code>أو مباشرة<code>pkill -f polling</code>،مرة أخرى<code>systemctl start hermes-gateway</code>.</p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">س: تم تشغيل البوابة ولكن الروبوت لا يستجيب تمامًا؟</p>
+<p style="font-size:13px;color:var(--dim)"><strong>سبب:</strong>9 Systemd لا يقرأ متغيرات البيئة. يظهر السجل<code>No messaging platforms enabled</code>أي أنه لم يتم تحميل الرمز المميز.<br/><strong>يحل:</strong>قم بتأكيد ملف الخدمة<code>Environment=</code>يتم ملء كافة المتغيرات الخمسة في →<code>daemon-reload</code>+<code>restart</code>→ اقرأ السجل مرة أخرى.</p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">س: تُبلغ DeepSeek API عن فشل المصادقة 401؟</p>
+<p style="font-size:13px;color:var(--dim)"><strong>سبب:</strong>يتم استخدام المفتاح الخاطئ (رمز كلود الأول) أو تنتهي صلاحية المفتاح.<br/><strong>يحل:</strong>استخدم الضفيرة لاختبار المفتاح (انظر الفقرة 6) ← إعادة بناء النظام الأساسي ← تحديث ملف الخدمة<code>DEEPSEEK_API_KEY</code>→<code>daemon-reload</code>+<code>restart</code>.</p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">س: فشل/انتهت مهلة اتصال SSH؟</p>
+<p style="font-size:13px;color:var(--dim)"><strong>التحقق من الطلب:</strong>① هل قائمة أمان OCI مفتوحة؟ 22 → ② IP العام نعم → ③ أذونات المفاتيح<code>chmod 400 ~/.ssh/id_rsa</code>→ ④ اسم المستخدم (لـ Ubuntu<code>ubuntu</code>).</p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">س: هل نفدت الذاكرة (OOM)؟</p>
+<p style="font-size:13px;color:var(--dim)">في الأساس، لن تواجه هذا مع مثيلات ARM 4 vCPU / 24 جيجابايت. يحتاج x86 micro إلى إضافة Swap أولاً:<br/><code>sudo fallocate -l 4G /swapfile &amp;&amp; sudo chmod 600 /swapfile &amp;&amp; sudo mkswap /swapfile &amp;&amp; sudo swapon /swapfile</code><br/>انضم مرة أخرى<code>/etc/fstab</code>فعالة بشكل دائم.</p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">س: هل ستقوم شركة Oracle بإعادة تدوير جهازي؟</p>
+<p style="font-size:13px;color:var(--dim)">ستقوم Oracle بإعادة تدوير المثيلات المجانية ذات فترات طويلة من النشاط المنخفض. تعد عملية تشغيل البوابة على مدار الساعة طوال أيام الأسبوع بحد ذاتها نشاطًا مستمرًا؛ إذا كنت تريد أن تكون أكثر استقرارًا، يمكنك إضافة keepalive:<br/><code>crontab -e</code>→ انضم<code>*/30 * * * * echo "keepalive $(date)" &gt;&gt; ~/keepalive.log</code></p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">س: هل أحتاج إلى إعادة التشغيل بعد التحديث؟</p>
+<p style="font-size:13px;color:var(--dim)"><code>apt upgrade</code>بعد تحديث النواة، عليك القيام بذلك<code>sudo reboot</code>فعالة أولا؛<code>hermes git pull --rebase</code>بعد تحديث الكود المصدري، عليك القيام بذلك<code>sudo systemctl restart hermes-gateway</code>.</p>
+</div>
+</div>
+</div>
+13.WebUI
+<div class="section" id="webui">
+<h2 class="section-title"><span class="num">13</span>متقدم: Hermes WebUI (اختياري)</h2>
+<p class="section-desc">هل تريد التفاعل مع الوكيل باستخدام واجهة المتصفح دون استخدام SSH؟ فقط قم بتثبيت WebUI.</p>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>استنساخ + تعيين كلمة المرور</h3>
+<div class="cmd">مؤتمر نزع السلاح ~
+استنساخ بوابة https://github.com/nesquena/hermes-webui.git Hermes-webui
+مؤتمر نزع السلاح هيرميس-webui
+echo "HERMES_WEBUI_PASSWORD=تعيين كلمة مرور قوية" &gt; .env</div>
+</div>
+<div class="step-item">
+<h3>بناء خدمة systemd</h3>
+<div class="cmd">سودو نانو /etc/systemd/system/hermes-webui.service</div>
+<div class="cmd">[الوحدة]
+الوصف=Hermes WebUI
+بعد=network.target
+
+[الخدمة]
+النوع=بسيط
+المستخدم = أوبونتو
+WorkingDirectory=/home/ubuntu/hermes-webui
+ExecStart=/home/ubuntu/hermes-webui/start.sh
+إعادة التشغيل = دائمًا
+إعادة التشغيل = 5
+
+[تثبيت]
+WantedBy=multi-user.target</div>
+</div>
+<div class="step-item">
+<h3>إطلاق + الوصول</h3>
+<div class="cmd">sudo systemctl daemon-reload
+Sudo systemctl يمكّن Hermes-webui
+Sudo systemctl ابدأ Hermes-webui</div>
+<p>افتح المتصفح<code>http://&lt;Public IP&gt;:8787</code>، قم بتسجيل الدخول باستخدام كلمة المرور .env. تذكر قائمة أمان OCI لتمرير 8787.</p>
+</div>
+<div class="step-item">
+<h3>(اختياري) إنشاء Nginx العكسي + HTTPS</h3>
+<div class="cmd">Sudo apt تثبيت nginx certbot python3-certbot-nginx -y
+Sudo nano /etc/nginx/sites-available/hermes-webui</div>
+<div class="cmd">الخادم {
+    استمع 80؛
+    اسم الخادم ai.yourdomain.com;
+    Client_max_body_size 500M؛
+    الموقع/{
+        proxy_pass http://127.0.0.1:8787;
+        proxy_http_version 1.1;
+        proxy_set_header المضيف $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        ترقية proxy_set_header $http_upgrade;
+        اتصال proxy_set_header "ترقية"؛
+    }
+}</div>
+<div class="cmd">Sudo ln -s /etc/nginx/sites-available/hermes-webui /etc/nginx/sites-enabled/
+sudo nginx -t &amp;&amp; sudo systemctl إعادة تشغيل nginx
+sudo certbot --nginx -d ai.yourdomain.com</div>
+</div>
+</div>
+</div>
+14. النسخ الاحتياطي
+<div class="section" id="backup">
+<h2 class="section-title"><span class="num">14</span>توصيات النسخ الاحتياطي والصيانة</h2>
+<h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎14.1 النسخ الاحتياطي المنتظم (أهم الملفات)</h3>
+<div class="cmd">القطران -czvf هيرميس-النسخ الاحتياطي-$(التاريخ +%Y%m%d).tar.gz \
+  ~/.hermes/config.yaml ~/.hermes/.env ~/.hermes/SOUL.md \
+  ~/.hermes/logs/ /etc/systemd/system/hermes-gateway.service
+
+# التراجع إلى المحلية
+scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
+<p style="font-size:13px;color:var(--dim)"><code>config.yaml</code>(يثبت)،<code>.env</code>(مفتاح)،<code>SOUL.md</code>(الذاكرة طويلة المدى)، ملفات خدمة systemd - هذه الإضافات الأربعة هي "روح" الجهاز، بدونها تكون مثل البدء من الصفر.</p>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎14.2 إيقاع الصيانة</h3>
+<div class="table-wrap">
+<table>
+<tr><th>تكرار</th><th>ما يجب القيام به</th></tr>
+<tr><td>أسبوعي</td><td><code>sudo apt update &amp;&amp; sudo apt upgrade -y</code>+<code>sudo apt autoremove -y</code></td></tr>
+<tr><td>كل شهر</td><td><code>sudo journalctl --vacuum-time=30d</code>;<code>df -h</code>/<code>free -h</code>يفحص</td></tr>
+<tr><td>كل 3-6 أشهر</td><td>تدوير مفتاح API، والتحقق من سلامة محرك الأقراص/النسخ الاحتياطي عن بعد</td></tr>
+</table>
+</div>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎14.3 توصيات السلامة</h3>
+<ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
+<li>تحديث حزمة النظام بانتظام؛ بعد تحديث النواة<code>sudo reboot</code></li>
+<li>ليس من السهل استخدام الجذر لتشغيل Hermes (استخدم مستخدم ubuntu)</li>
+<li>حد<code>TELEGRAM_ALLOWED_USERS</code>، لمنع الاستخدام غير المصرح به</li>
+<li>قم بتثبيت Fail2ban لمنع اختراق القوة الغاشمة:<code>sudo apt install fail2ban -y</code></li>
+<li>تحقق بانتظام من استخدام واجهة برمجة التطبيقات (API) لتجنب الإنفاق الزائد غير المتوقع</li>
+</ul>
+</div>
+زائدة
+<div class="section" id="appendix">
+<h2 class="section-title"><span class="num p-icon">مُرفَق</span>الملحق: مسار الملف + حد الموارد + قائمة الإكمال</h2>
+<h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎نظرة عامة على مسارات الملفات</h3>
+<div class="table-wrap">
+<table>
+<tr><th>طريق</th><th>يوضح</th></tr>
+<tr><td><code>~/.local/bin/hermes</code></td><td>هيرميس البرنامج الرئيسي</td></tr>
+<tr><td><code>~/.hermes/config.yaml</code></td><td>الملف الرئيسي</td></tr>
+<tr><td><code>~/.hermes/.env</code></td><td>متغيرات/مفاتيح البيئة</td></tr>
+<tr><td><code>~/.hermes/SOUL.md</code></td><td>كلمات موجهة للنظام (الذاكرة طويلة المدى)</td></tr>
+<tr><td><code>~/.hermes/logs/gateway.log</code></td><td>سجل البوابة</td></tr>
+<tr><td><code>/etc/systemd/system/hermes-gateway.service</code></td><td>ملف خدمة بوابة systemd</td></tr>
+</table>
+</div>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎OCI دائمًا حد الموارد المجاني</h3>
+<div class="table-wrap">
+<table>
+<tr><th>الموارد</th><th>حد</th></tr>
+<tr><td>ARM أمبير A1 مثال</td><td>ما يصل إلى 4 وحدات معالجة مركزية + 24 جيجابايت من ذاكرة الوصول العشوائي</td></tr>
+<tr><td>مثيل AMD x86</td><td>ما يصل إلى 2 E2.1.Micro (1/8 OCPU + 1 جيجابايت لكل منهما)</td></tr>
+<tr><td>إجمالي سعة قرص التمهيد</td><td>200 جيجابايت (مشتركة في جميع الحالات)</td></tr>
+<tr><td>IPv4 العام</td><td>ما يصل إلى 6</td></tr>
+<tr><td>عرض النطاق الترددي للشبكة</td><td>1 جيجابت في الثانية لكل وحدة معالجة مركزية افتراضية</td></tr>
+</table>
+</div>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎قائمة مراجعة إكمال النشر</h3>
+<div class="table-wrap">
+<table>
+<tr><th>✅</th><th>تحقق من العناصر</th></tr>
+<tr><td>□</td><td>تم إنشاء VM (ARM 4 OCPU / 24GB) وتم توصيل SSH به</td></tr>
+<tr><td>□</td><td><code>hermes --version</code>هناك الإخراج</td></tr>
+<tr><td>□</td><td>مفتاح DeepSeek API صالح (curl 200)</td></tr>
+<tr><td>□</td><td>خدمة systemd نشطة + ممكّنة، راجع السجل<code>✓ telegram connected</code></td></tr>
+<tr><td>□</td><td>اختبار Telegram الفعلي لديه الرد</td></tr>
+<tr><td>□</td><td>قامت SOUL.md بإعداد الرد الصيني التقليدي</td></tr>
+<tr><td>□</td><td>تم تمكين قائمة أمان OCI + جدار الحماية ثنائي الطبقة UFW</td></tr>
+<tr><td>□</td><td>تم إنشاء استراتيجية النسخ الاحتياطي (tar.gz + pull back to local)</td></tr>
+</table>
+</div>
+</div>
+روابط ذات صلة
+<div class="link-block" style="margin-top:16px">
+<h3>روابط ذات صلة</h3>
+<div class="link-row"><span class="label">وكيل هيرميس</span><a href="https://github.com/NousResearch/hermes-agent" target="_blank">github.com/NousResearch/hermes-agent</a> <span class="badge ok">معهد ماساتشوستس للتكنولوجيا مفتوحة المصدر</span></div>
+<div class="link-row"><span class="label">أوراكل الطبقة الحرة</span><a href="https://www.oracle.com/cloud/free/" target="_blank">oracle.com/cloud/free</a></div>
+<div class="link-row"><span class="label">منصة ديب سيك</span><a href="https://platform.deepseek.com" target="_blank">منصة.deepseek.com</a></div>
+<div class="link-row"><span class="label">هيرميس WebUI</span><a href="https://github.com/nesquena/hermes-webui" target="_blank">github.com/nesquena/hermes-webui</a></div>
+<div class="link-row"><span class="label">دليل هيرميس</span><a href="https://forumdata-collab.github.io/hermes-mp3-guide/">دليل تحميل الموسيقى وكيل هيرميس</a></div>
+<div class="link-row"><span class="label">دليل قوات التحالف</span><a href="https://forumdata-collab.github.io/hermes-cf-guide/">وكيل هيرميس × الدليل التكميلي Cloudflare AI</a></div>
+<div class="link-row"><span class="label">الإنترنت العلمي</span><a href="https://forumdata-collab.github.io/hermes-gfw-guide/">ممارسة الإنترنت العلمي Oracle VM + Cloudflare ثنائي القناة</a></div>
+</div>
+<div class="footer">
+<a href="https://github.com/forumdata-collab" target="_blank">جيثب</a>· جميعها تم اختبارها شخصيًا · لقد تم تجاوز جميع المزالق من أجلك
+    · بحوث النوس</div>
+</div>
+</body>
+</html>
