@@ -1,0 +1,661 @@
+html
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="How to deploy Hermes Agent on Oracle VM for free - OCI Free Tier ARM Practical Guide · 4 vCPU / 24GB permanently free · systemd 24/7 running · All pitfalls for personal testing" name="description"/>
+<title>How to deploy Hermes Agent on Oracle VM for free · Nous Research</title>
+<style>
+:root{--bg1:#0f0c29;--bg2:#302b63;--bg3:#24243e;--card:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.08);--text:#e8e8e8;--dim:rgba(255,255,255,0.45);--accent:#6c8cff;--green:#4ade80;--orange:#fb923c;--red:#f87171;--purple:#a78bfa;--teal:#2dd4bf;--cyan:#22d3ee;--teal-dim:rgba(45,212,191,0.12);--cyan-dim:rgba(34,211,238,0.12)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));color:var(--text);min-height:100vh;line-height:1.7}
+.container{max-width:900px;margin:0 auto;padding:32px 24px 80px}
+
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--dim);text-decoration:none;font-size:14px;margin-bottom:16px;transition:color .2s}
+.back-link:hover{color:var(--text)}
+
+.hero{text-align:center;padding:40px 0 24px}
+.hero-badge{display:inline-block;background:var(--teal-dim);color:var(--teal);border:1px solid rgba(45,212,191,0.2);padding:4px 14px;border-radius:20px;font-size:12px;margin-bottom:16px;letter-spacing:1px}
+.hero h1{font-size:34px;font-weight:800;background:linear-gradient(135deg,#2dd4bf,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;line-height:1.3}
+.hero p{font-size:15px;color:var(--dim);max-width:620px;margin:0 auto}
+.hero .disclaimer{margin-top:14px;font-size:12px;color:var(--dim);border:1px solid rgba(45,212,191,0.15);background:rgba(45,212,191,0.05);border-radius:10px;padding:10px 16px;display:inline-block}
+
+.section{margin-bottom:40px}
+.section-title{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.section-title .num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--teal-dim);color:var(--teal);font-size:14px;font-weight:700;flex-shrink:0}
+.section-title .p-icon{background:var(--cyan-dim);color:var(--cyan)}
+.section-title .r-icon{background:rgba(248,113,113,0.1);color:var(--red)}
+.section-desc{font-size:14px;color:var(--dim);margin-bottom:14px}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle}
+.badge.ok{background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,0.15)}
+.badge.need{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.15)}
+.badge.teal{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(45,212,191,0.15)}
+.badge.cyan{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(34,211,238,0.15)}
+.badge.warn{background:rgba(251,191,36,0.1);color:var(--orange);border:1px solid rgba(251,191,36,0.15)}
+
+.step-list{counter-reset:step;display:flex;flex-direction:column;gap:10px}
+.step-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;position:relative;padding-left:60px}
+.step-item::before{counter-increment:step;content:counter(step);position:absolute;left:18px;top:20px;width:26px;height:26px;border-radius:8px;background:var(--teal-dim);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.step-item h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.step-item p{font-size:13px;color:var(--dim);line-height:1.6}
+.step-item code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:4px;font-size:12px;color:#2dd4bf}
+.step-item .cmd{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 16px;margin-top:6px;font-family:'Consolas','Courier New',monospace;font-size:13px;color:#b8c7ff;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+.step-item .cmd .c{color:rgba(255,255,255,0.3)}
+.step-item a{color:var(--accent)}
+.step-item strong{color:var(--text)}
+.step-item ul{margin:4px 0;padding-left:18px;font-size:13px;color:var(--dim)}
+.step-item li{margin-bottom:2px}
+
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.feature-card .f-icon{font-size:22px;margin-bottom:8px}
+.feature-card h3{font-size:14px;font-weight:600;margin-bottom:4px}
+.feature-card p{font-size:13px;color:var(--dim);line-height:1.6}
+
+.compare-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+.compare-table th{text-align:left;padding:10px 14px;background:rgba(45,212,191,0.06);color:var(--teal);font-weight:600;border-bottom:1px solid var(--border)}
+.compare-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--dim)}
+.compare-table tr td:first-child{color:var(--text);font-weight:500}
+
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow-x:auto;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:10px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.04)}
+th{color:var(--dim);font-weight:600;background:rgba(255,255,255,0.02)}
+td{color:var(--text)} tr:last-child td{border-bottom:none}
+td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underline}
+
+.link-block{background:var(--teal-dim);border:1px solid rgba(45,212,191,0.1);border-radius:14px;padding:20px 24px;margin-bottom:12px}
+.link-block h3{font-size:15px;font-weight:600;margin-bottom:10px;color:var(--teal)}
+.link-block .link-row{display:flex;align-items:center;padding:6px 0;font-size:13px;gap:8px}
+.link-block .link-row .label{color:var(--dim);min-width:80px;flex-shrink:0}
+.link-block .link-row a{color:var(--accent);text-decoration:none}
+.link-block .link-row a:hover{text-decoration:underline}
+
+.tip{background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.12);border-radius:12px;padding:14px 18px;font-size:13px;color:var(--orange);margin-top:10px}
+.tip.info{background:rgba(108,140,255,0.07);border-color:rgba(108,140,255,0.12);color:var(--accent)}
+.tip.green{background:rgba(74,222,128,0.07);border-color:rgba(74,222,128,0.12);color:var(--green)}
+.tip.cyan{background:var(--cyan-dim);border-color:rgba(34,211,238,0.12);color:var(--cyan)}
+.tip.red{background:rgba(248,113,113,0.07);border-color:rgba(248,113,113,0.12);color:var(--red)}
+
+.toc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:32px}
+.toc a{font-size:12px;color:var(--dim);text-decoration:none;padding:4px 12px;border-radius:8px;border:1px solid var(--border);transition:all .2s}
+.toc a:hover{color:var(--text);border-color:rgba(255,255,255,0.15)}
+
+.arch-flow{display:flex;align-items:center;gap:10px;font-family:'SF Mono','Consolas',monospace;font-size:12px;color:var(--dim);flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+.arch-flow span{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;white-space:nowrap}
+.arch-flow .arrow{background:none;border:none;color:var(--teal);padding:0 2px;font-size:14px}
+
+.footer{text-align:center;padding:32px 0 0;font-size:12px;color:rgba(255,255,255,0.2);border-top:1px solid rgba(255,255,255,0.04);margin-top:32px}
+.footer a{color:rgba(255,255,255,0.3);text-decoration:none}
+.footer a:hover{color:rgba(255,255,255,0.5)}
+
+@media(max-width:640px){
+  .container{padding:20px 16px 60px}
+  .hero h1{font-size:26px}
+  .step-item{padding:16px 16px 16px 48px}
+  .step-item::before{left:14px;top:16px;width:22px;height:22px;font-size:12px}
+  .arch-flow{gap:6px}
+  .arch-flow span{padding:4px 8px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:18px"><select onchange="location.href=this.value" style="background:var(--card,#171e2e);color:var(--text,#e8e8e8);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit"><option value="https://forumdata-collab.github.io/hermes-oracle-guide/en/" selected>English (US)</option><option value="https://forumdata-collab.github.io/hermes-oracle-guide/zh-CN/">简体中文</option><option value="https://forumdata-collab.github.io/hermes-oracle-guide/zh-TW/">繁體中文（台灣）</option><option value="https://forumdata-collab.github.io/hermes-oracle-guide/">繁體中文（香港）</option><option value="https://forumdata-collab.github.io/hermes-oracle-guide/ar/">العربية</option></select><a href="https://ko-fi.com/forumdata" target="_blank" style="display:inline-flex;align-items:center;gap:10px;padding:12px 28px;background:#ff5e5b;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.47.06 8.529-1.723 8.649-4.916zm-11.638 8.978c-2.252 0-4.078-1.826-4.078-4.078s1.826-4.078 4.078-4.078 4.078 1.826 4.078 4.078-4.078 4.078z"/></svg>☕ 請我喝杯咖啡</a></div>
+<div class="container">
+<a class="back-link" href="https://forumdata-collab.github.io/">← Return to homepage</a>
+<div class="hero">
+<div class="hero-badge">Nous Research · MIT Open Source · 2026</div>
+<h1>How to deploy Hermes Agent on Oracle VM for free</h1>
+<p>OCI Free Tier ARM in practice · 4 vCPU / 24GB RAM Free forever · systemd running 24/7<br/>Zero-cost cloud AI Agent, all pitfalls have been eliminated for you</p>
+<div class="disclaimer">⚡ This guide is based on actual measurement on 2026-08-01. All resources must be maintained within the "Always Free" quota, and fees will be charged if they are exceeded.</div>
+</div>
+Directory
+<div class="toc">
+<a href="#arch">0 architecture</a>
+<a href="#signup">1 Register an account</a>
+<a href="#vm">2 Create VM</a>
+<a href="#ssh">3 SSH initialization</a>
+<a href="#install">4 Install Hermes</a>
+<a href="#setup">5 Initialization settings</a>
+<a href="#api">6 Model API Key</a>
+<a href="#gateway">7 systemdGateway</a>
+<a href="#telegram">8 Telegram Bots</a>
+<a href="#soul">9 replies in Chinese</a>
+<a href="#firewall">10 firewall</a>
+<a href="#commands">11 Command Quick Check</a>
+<a href="#faq">12 Trampling Collection</a>
+<a href="#webui">13WebUI</a>
+<a href="#backup">14 Backup maintenance</a>
+</div>
+0. Architecture
+<div class="section" id="arch">
+<h2 class="section-title"><span class="num">0</span>How to deploy (architecture overview)</h2>
+<p class="section-desc">Hermes Agent is an open source AI Agent framework (MIT protocol) developed by Nous Research - it reads files, writes code, executes commands, and controls browsers on the terminal. It is not bound to any model manufacturer and has a built-in Telegram Gateway. Put it on Oracle's permanently free VM and it becomes a 24/7 uninterrupted cloud AI Agent.</p>
+<div class="arch-flow">
+<span>Telegram messages</span><span class="arrow">→</span>
+<span>Hermes Gateway</span><span class="arrow">→</span>
+<span>DeepSeek API</span><span class="arrow">→</span>
+<span>AI Reply</span><span class="arrow">→</span>
+<span>Telegram chat</span>
+</div>
+<p style="font-size:13px;color:var(--dim);text-align:center;margin-bottom:20px">systemd service management: auto-start at boot, auto-restart after crash, and disconnect SSH all run as usual.</p>
+<div class="feature-grid">
+<div class="feature-card"><div class="f-icon">💰</div><h3>Free forever</h3><p>ARM 4 vCPU + 24GB RAM + 200GB disk, no long-term credit card charges</p></div>
+<div class="feature-card"><div class="f-icon">🔄</div><h3>Model freedom</h3><p>You can choose from DeepSeek / OpenAI / Anthropic / Google, just change the supplier and change the config.</p></div>
+<div class="feature-card"><div class="f-icon">💬</div><h3>Telegram native</h3><p>Built-in Gateway, a systemd service that automatically replies 24/7</p></div>
+<div class="feature-card"><div class="f-icon">🖥️</div><h3>Zero operational anxiety</h3><p>Automatic restart after crash + journald log + remote backup, you can’t even sleep.</p></div>
+</div>
+</div>
+1. Register
+<div class="section" id="signup">
+<h2 class="section-title"><span class="num">1</span>Register for an Oracle Cloud Free Tier account</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>Go to registration page</h3>
+<div class="cmd">https://signup.cloud.oracle.com/</div>
+<p>Fill in your name, email, and country/region.</p>
+</div>
+<div class="step-item">
+<h3>Pick Home Region<span class="badge need">key</span></h3>
+<p>Be sure to pick<strong>Supports Ampere ARM instances</strong>Region (Cannot be changed after Home Region):<br/>Osaka / Tokyo / Paris / Frankfurt / Ashburn / Phoenix are all supported.</p>
+<div class="tip red">If you choose the wrong Home Region, there will be no ARM instances - this will determine whether you will have 4 vCPU free machines later.</div>
+</div>
+<div class="step-item">
+<h3>Credit card verification</h3>
+<p>A valid credit or debit card is required. Oracle will temporarily deduct the contract<strong>$1 USD</strong>Verify and return after a few days.<strong>Virtual or prepaid cards are not accepted.</strong></p>
+</div>
+<div class="step-item">
+<h3>Waiting for activation</h3>
+<p>Usually a few minutes to a few hours. Log in after receiving the activation email<code>cloud.oracle.com</code>.</p>
+</div>
+</div>
+<div class="tip warn" style="margin-top:12px">
+<strong>⚠️ Free does not mean unlimited:</strong>Resources exceeding the "Always Free" limit will incur fees. It is recommended to upgrade to Pay-As-You-Go (still $0, but it can be solved when the capacity is insufficient, and it is also an antidote to the lack of capacity with free ARM).</div>
+</div>
+2. Create VM
+<div class="section" id="vm">
+<h2 class="section-title"><span class="num">2</span>Create an OCI computing instance (VM)</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>Open the creation page</h3>
+<p>OCI Console →<strong>Compute → Instances → Create Instance</strong>. The area should display the "Always Free-eligible" label.</p>
+</div>
+<div class="step-item">
+<h3>Pick image file</h3>
+<p>Change image → pick<strong>Ubuntu 22.04 LTS or 24.04 LTS</strong>.</p>
+</div>
+<div class="step-item">
+<h3>Pick instance specifications<span class="badge ok">ARM Ampere Recommended</span></h3>
+<div class="table-wrap">
+<table>
+<tr><th>Plan</th><th>Specifications</th><th>Suggestions</th></tr>
+<tr><td>ARM Ampere A1</td><td><code>VM.Standard.A1.Flex</code>— 4 OCPU + 24GB RAM</td><td class="ok">✅ Main force (Free Tier’s most generous configuration)</td></tr>
+<tr><td>x86Micro</td><td><code>VM.Standard.E2.1.Micro</code>— 1/8 OCPU + 1GB</td><td class="no">❌ Too thin, only suitable for testing</td></tr>
+</table>
+</div>
+</div>
+<div class="step-item">
+<h3>Network + SSH key</h3>
+<p>Use the default VCN/subnet and check "Assign a public IPv4 address". SSH select "Paste public keys" and paste your public key (generate it if it is not available locally):</p>
+<div class="cmd">ssh-keygen -t rsa -b 4096 -C "your_email@example.com"</div>
+</div>
+<div class="step-item">
+<h3>Increase the boot disk size to 200GB<span class="badge teal">Free cap</span></h3>
+<p>Show advanced options → Boot volume → Custom size → Enter<strong>200</strong>(GB). The default is 50GB. It is not so convenient to expand it first before downloading.</p>
+</div>
+<div class="step-item">
+<h3>Create and remember the Public IP</h3>
+<p>Wait for the status to change to "Running" and record the lower Public IP (for example<code>130.123.45.67</code>).</p>
+</div>
+</div>
+</div>
+3. SSH
+<div class="section" id="ssh">
+<h2 class="section-title"><span class="num">3</span>Connect VM and system initialization</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>SSH connection</h3>
+<div class="cmd">ssh -i ~/.ssh/id_rsa ubuntu@&lt;your Public IP&gt;</div>
+<p>Ubuntu default user system<code>ubuntu</code>;Oracle Linux first<code>opc</code>.</p>
+</div>
+<div class="step-item">
+<h3>Update system</h3>
+<div class="cmd">sudo apt update &amp;&amp; sudo apt upgrade -y</div>
+</div>
+<div class="step-item">
+<h3>Install basic tools + set time zone</h3>
+<div class="cmd">sudo apt install -y curl git wget nano vim ufw build-essential
+sudo timedatectl set-timezone Asia/Hong_Kong</div>
+</div>
+<div class="step-item">
+<h3>Turn on UFW firewall (first layer)</h3>
+<div class="cmd">sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw enable</div>
+<p>⚠️ Remember:<strong>Oracle has two layers of firewall</strong>— In addition to UFW/iptables inside the VM, there is also the Security List of OCI VCN (discussed in Section 10). Both floors must be opened first.</p>
+</div>
+</div>
+</div>
+4. Installation
+<div class="section" id="install">
+<h2 class="section-title"><span class="num">4</span>Install Hermes Agent</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>One click installation</h3>
+<div class="cmd">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash</div>
+<p>Automatic completion: install uv → build Python 3.11 venv → install 100+ dependencies → install Node.js → install cua-driver.</p>
+</div>
+<div class="step-item">
+<h3>Reload + verify</h3>
+<div class="cmd">source ~/.bashrc
+hermes --version</div>
+<p>out to the version number (e.g.<code>hermes 0.14.0</code>) means success. The installation path is<code>~/.local/bin/hermes</code>, set in<code>~/.hermes/</code>.</p>
+</div>
+</div>
+<div class="tip red" style="margin-top:12px">
+<strong>⚠️ ARM actual test pit: HTTP/2 download failed.</strong>The installation script may report when downloading Node.js<code>curl: (92) HTTP/2 stream error</code>. Solution:<code>Ctrl+C</code>Termination → Manually download Node.js for ARM using HTTP/1.1:<div class="cmd" style="margin-top:6px">curl --http1.1 -L "https://nodejs.org/dist/v22.11.0/node-v22.11.0-linux-arm64.tar.gz" -o /tmp/node.tar.gz
+mkdir -p ~/.hermes/node
+tar -xzf /tmp/node.tar.gz -C ~/.hermes/node --strip-components=1
+rm /tmp/node.tar.gz</div>If you re-execute the installation script, the downloaded Node.js will be skipped.</div>
+</div>
+5. setup
+<div class="section" id="setup">
+<h2 class="section-title"><span class="num">5</span>Initial settings (setup wizard)</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>Start wizard</h3>
+<div class="cmd">hermes setup</div>
+</div>
+<div class="step-item">
+<h3>Options at a glance</h3>
+<ul>
+<li>Setting mode: Quick setup (quick) or Custom setup (detailed)</li>
+<li>Terminal backend:<strong>local backend</strong></li>
+<li>Messaging platform: Select “Skip — set up later” and set up Telegram separately (section 7-8)</li>
+</ul>
+</div>
+<div class="step-item">
+<h3>Complete</h3>
+<p>Setting writing<code>~/.hermes/config.yaml</code>, the key is written<code>~/.hermes/.env</code>.</p>
+</div>
+</div>
+</div>
+6. API Key
+<div class="section" id="api">
+<h2 class="section-title"><span class="num">6</span>Set model provider and API Key</h2>
+<p class="section-desc">Hermes supports any supplier. The following uses DeepSeek as an example (high cost performance, no overseas payment required).</p>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>枞DeepSeek API Key</h3>
+<p><code>platform.deepseek.com</code>→ Registration/Login → API Keys → Create Key (<code>sk-</code>beginning). New users have free quota.</p>
+</div>
+<div class="step-item">
+<h3>Confirm config.yaml</h3>
+<div class="cmd">nano ~/.hermes/config.yaml</div>
+<div class="cmd">provider: deepseek
+model: deepseek-v4-pro
+base_url: https://api.deepseek.com/v1</div>
+</div>
+<div class="step-item">
+<h3>Write to .env</h3>
+<div class="cmd">DEEPSEEK_API_KEY=sk - your deepseek key</div>
+</div>
+<div class="step-item">
+<h3>Verify connection</h3>
+<div class="cmd">hermes chat</div>
+<p>Enter "Hello" and receive the reply successfully.<code>Ctrl+C</code>Exit.</p>
+</div>
+</div>
+<div class="tip red" style="margin-top:12px">
+<strong>⚠️ Pitfall: There are two types of DeepSeek Key!</strong>People who have used Claude Code + DeepSeek may be mistaken - one is used by Claude Code<code>ANTHROPIC_AUTH_TOKEN</code>, one is the DeepSeek platform native Key,<strong>Both have the same format but different values</strong>. Use the original Key of the platform; reporting 401 means Key error. Quick test:<div class="cmd" style="margin-top:6px">curl https://api.deepseek.com/v1/chat/completions \
+  -H "Authorization: Bearer sk-your key" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"deepseek-v4-pro","messages":[{"role":"user","content":"hi"}]}'</div>200 = valid, 401 = invalid.</div>
+</div>
+7. Gateway systemd
+<div class="section" id="gateway">
+<h2 class="section-title"><span class="num">7</span>Install Hermes Gateway (systemd service)</h2>
+<p class="section-desc">On a Linux server, Gateway must run systemd to: auto-start at boot, auto-restart on crash, stay connected 24/7, and continue running after disconnecting SSH.</p>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>Install Gateway</h3>
+<div class="cmd">hermes gateway install</div>
+</div>
+<div class="step-item">
+<h3>Manually create systemd service file<span class="badge need">core steps</span></h3>
+<p>⚠️<strong>The biggest pitfall: systemd cannot read .env files!</strong>Environment variables must be written directly to the service file, otherwise the Bot session will be "No messaging platforms enabled".</p>
+<div class="cmd">sudo nano /etc/systemd/system/hermes-gateway.service</div>
+<div class="cmd">[Unit]
+Description=Hermes Gateway Service
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu
+ExecStart=/home/ubuntu/.local/bin/hermes gateway
+Restart=always
+RestartSec=10
+Environment=PATH=/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
+
+# Key: systemd does not read .env, environment variables must be written directly there!
+Environment=DEEPSEEK_API_KEY=sk-your deepseek key
+Environment=TELEGRAM_BOT_TOKEN=Your Bot Token
+Environment=TELEGRAM_ALLOWED_USERS=Your Telegram digital ID
+Environment=TELEGRAM_HOME_CHANNEL=Your Telegram digital ID
+Environment=GATEWAY_ALLOW_ALL_USERS=true
+
+[Install]
+WantedBy=multi-user.target</div>
+<p>Key points of modification:<code>User</code>/<code>WorkingDirectory</code>/<code>ExecStart</code>Change according to actual path; five<code>Environment=</code>All must be filled in with true values.</p>
+</div>
+<div class="step-item">
+<h3>Start + Start at boot</h3>
+<div class="cmd">sudo systemctl daemon-reload
+sudo systemctl enable hermes-gateway
+sudo systemctl start hermes-gateway</div>
+</div>
+<div class="step-item">
+<h3>Verify + read logs</h3>
+<div class="cmd">sudo systemctl status hermes-gateway
+sudo journalctl -u hermes-gateway -f</div>
+<p>status display<code>active (running)</code>, the log sees<code>✓ telegram connected</code>That is success.</p>
+</div>
+<div class="step-item">
+<h3>Set up log rotation (to prevent disk explosion)</h3>
+<div class="cmd">sudo nano /etc/systemd/journald.conf</div>
+<div class="cmd">SystemMaxUse=200M
+SystemKeepFree=500M
+RuntimeMaxUse=100M</div>
+<div class="cmd">sudo systemctl restart systemd-journald</div>
+</div>
+</div>
+<div class="tip green" style="margin-top:12px">
+<strong>Lessons from actual testing (our machine):</strong>To modify the service file, you can write it locally and upload it first -<code>sudo cp</code>enter<code>/etc/systemd/system/</code>Again<code>daemon-reload</code>Just have to. In addition<strong>Before using systemd on Bot, you must pkill the old polling process.</strong>, otherwise Telegram will report 409 Conflict (two getUpdates compete for the same Bot at the same time). finally<code>hermes git pull --rebase</code>Remember to restart the service after updating.</div>
+</div>
+8. Telegram
+<div class="section" id="telegram">
+<h2 class="section-title"><span class="num">8</span>Access Telegram Bot</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>Build a Bot with @BotFather</h3>
+<p>Telegram search<a href="https://t.me/BotFather" target="_blank">@BotFather</a>→<code>/newbot</code>→ Set name/username →<strong>Bot Token</strong>(Format<code>123456:ABC-DEF1234ghiJKL</code>). Store it properly and avoid leakage.</p>
+</div>
+<div class="step-item">
+<h3>Get your Telegram digital ID</h3>
+<p>Search<a href="https://t.me/userinfobot" target="_blank">@userinfobot</a>→<code>/start</code>→ Numeric ID (e.g.<code>123456789</code>).</p>
+</div>
+<div class="step-item">
+<h3>Update systemd service files</h3>
+<div class="cmd">sudo nano /etc/systemd/system/hermes-gateway.service</div>
+<div class="cmd">Environment=TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghiJKL
+Environment=TELEGRAM_ALLOWED_USERS=123456789
+Environment=TELEGRAM_HOME_CHANNEL=123456789
+Environment=GATEWAY_ALLOW_ALL_USERS=true</div>
+<div class="cmd">sudo systemctl daemon-reload
+sudo systemctl restart hermes-gateway</div>
+</div>
+<div class="step-item">
+<h3>Verify</h3>
+<p>log see<code>✓ telegram connected</code>, and then talk to your Bot on Telegram and get a reply.</p>
+</div>
+</div>
+<div class="tip info" style="margin-top:12px">
+<strong>Troubleshooting tips:</strong>Bot has no response → ①<code>sudo systemctl status hermes-gateway</code>System running → ② log<code>journalctl -u hermes-gateway -f</code>→ ③ see<code>No messaging platforms enabled</code>= Token has not been read → ④ Check the service file Environment → ⑤<code>daemon-reload</code>+<code>restart</code>→ ⑥ Verify again.</div>
+</div>
+9.SOUL.md
+<div class="section" id="soul">
+<h2 class="section-title"><span class="num">9</span>Set Chinese reply (SOUL.md)</h2>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>Edit SOUL.md</h3>
+<div class="cmd">cp ~/.hermes/SOUL.md ~/.hermes/SOUL.md.backup
+nano ~/.hermes/SOUL.md</div>
+<p>Add language rules at the top:</p>
+<div class="cmd">CRITICAL LANGUAGE RULE: You MUST reply in Chinese (繁体中文) at all times.
+The user speaks Chinese. Never use English unless the user explicitly asks.</div>
+</div>
+<div class="step-item">
+<h3>(Optional) Inject project knowledge</h3>
+<p>SOUL.md can write identity, skills, project structure, coding specifications, and commonly used commands - it becomes Hermes' "long-term memory" and is referenced in every conversation.</p>
+</div>
+<div class="step-item">
+<h3>Restart takes effect</h3>
+<div class="cmd">sudo systemctl restart hermes-gateway</div>
+<p>After changing SOUL.md, you must restart Gateway for it to take effect.</p>
+</div>
+</div>
+</div>
+10. Firewall
+<div class="section" id="firewall">
+<h2 class="section-title"><span class="num">10</span>Firewall and security rules (both layers must be turned on)</h2>
+<p class="section-desc">Oracle VM has<strong>Two-layer firewall</strong>: Security List of OCI VCN (cloud layer) + UFW (system layer) within the instance. Both floors will not be allowed to pass until they are cleared first.</p>
+<h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎10.1 OCI Security List (cloud layer)</h3>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>Open inbound rules</h3>
+<p>OCI Console → Networking → Virtual Cloud Networks → Select VCN → Subnets → Security Lists → Default Security List → Add Ingress Rules:</p>
+<div class="table-wrap">
+<table>
+<tr><th>Source type</th><th>Source CIDR</th><th>port</th><th>Purpose</th></tr>
+<tr><td>CIDR</td><td>0.0.0.0/0</td><td>22</td><td>SSH</td></tr>
+<tr><td>CIDR</td><td>0.0.0.0/0</td><td>80</td><td>HTTP</td></tr>
+<tr><td>CIDR</td><td>0.0.0.0/0</td><td>443</td><td>HTTPS</td></tr>
+</table>
+</div>
+<p>If you install WebUI, you need to open the corresponding port (such as 8787).</p>
+</div>
+</div>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎10.2 Instance firewall (system layer)</h3>
+<div class="cmd">sudo ufw status verbose</div>
+<p style="font-size:13px;color:var(--dim)">should see<code>22 / 80 / 443 ALLOW IN</code>. Oracle Linux users may need to change iptables directly if UFW does not respond.</p>
+<div class="tip red" style="margin-top:12px">
+<strong>⚠️ Lessons from actual testing: OCI’s “NSG ≠ iptables”.</strong>If you have opened the security list in the Console but still cannot connect, it is best to check iptables in the VM - first confirm whether the OCI layer (Security List / NSG) is allowed. The two floors are independent.<strong>Any layer that blocks it will fail.</strong>. Zhong You: Many times 443 has been occupied by other services (such as sing-box proxy). Before opening the port,<code>ss -tlnp</code>Take a look at the location below.</div>
+</div>
+11. Command quick check
+<div class="section" id="commands">
+<h2 class="section-title"><span class="num">11</span>Common command cheat sheet</h2>
+<div class="table-wrap">
+<table>
+<tr><th>instructions</th><th>function</th></tr>
+<tr><td><code>hermes chat</code></td><td>Start terminal conversation mode</td></tr>
+<tr><td><code>hermes --tui</code></td><td>Start TUI interface</td></tr>
+<tr><td><code>hermes setup</code></td><td>Run the setup wizard again</td></tr>
+<tr><td><code>hermes update</code></td><td>Update Hermes Agent (for source version)<code>git pull --rebase</code>)</td></tr>
+<tr><td><code>hermes gateway install / status / restart</code></td><td>Gateway Installation/Status/Restart</td></tr>
+<tr><td><code>hermes cron list / status</code></td><td>List/view scheduled tasks</td></tr>
+<tr><td><code>sudo systemctl status hermes-gateway</code></td><td>Check service status</td></tr>
+<tr><td><code>sudo systemctl enable hermes-gateway</code></td><td>Start automatically at boot</td></tr>
+<tr><td><code>sudo journalctl -u hermes-gateway -f</code></td><td>View service logs in real time</td></tr>
+<tr><td><code>tail -f ~/.hermes/logs/gateway.log</code></td><td>View Hermes logs instantly</td></tr>
+<tr><td><code>df -h / free -h</code></td><td>Disk/memory usage</td></tr>
+</table>
+</div>
+</div>
+12. Step on the trap
+<div class="section" id="faq">
+<h2 class="section-title"><span class="num">12</span>A collection of pitfalls (all personally tested)</h2>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">Q: Bot reports 409 Conflict after running systemd?</p>
+<p style="font-size:13px;color:var(--dim)"><strong>Reason:</strong>The old polling process is still competing with the Gateway for a Bot Token.<br/><strong>Solution:</strong>Before starting service<code>pkill -f "hermes"</code>or directly<code>pkill -f polling</code>, again<code>systemctl start hermes-gateway</code>.</p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">Q: Gateway is started but Bot is completely unresponsive?</p>
+<p style="font-size:13px;color:var(--dim)"><strong>Reason:</strong>9 Systemd does not read environment variables. Log appears<code>No messaging platforms enabled</code>That is, the Token is not loaded.<br/><strong>Solution:</strong>Confirm the service file<code>Environment=</code>All five variables are filled in →<code>daemon-reload</code>+<code>restart</code>→ Read the log again.</p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">Q: DeepSeek API reports 401 Authentication Fails?</p>
+<p style="font-size:13px;color:var(--dim)"><strong>Reason:</strong>The wrong Key (the Claude Code one) is used or the Key expires.<br/><strong>Solution:</strong>Use curl to test the Key (see §6) → Rebuild the platform → Update the service file<code>DEEPSEEK_API_KEY</code>→<code>daemon-reload</code>+<code>restart</code>.</p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">Q: SSH connection failed/timed out?</p>
+<p style="font-size:13px;color:var(--dim)"><strong>Check order:</strong>① Is OCI Security List open? 22 → ② Public IP Yes → ③ Key permissions<code>chmod 400 ~/.ssh/id_rsa</code>→ ④ Username (for Ubuntu<code>ubuntu</code>).</p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">Q: Out of memory (OOM)?</p>
+<p style="font-size:13px;color:var(--dim)">Basically you will not encounter this with ARM 4 vCPU / 24GB instances. x86 micro needs to add Swap first:<br/><code>sudo fallocate -l 4G /swapfile &amp;&amp; sudo chmod 600 /swapfile &amp;&amp; sudo mkswap /swapfile &amp;&amp; sudo swapon /swapfile</code><br/>Join again<code>/etc/fstab</code>Effective permanently.</p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">Q: Will Oracle recycle my machine?</p>
+<p style="font-size:13px;color:var(--dim)">Oracle will recycle free instances with long periods of low activity. Gateway 24/7 operation itself is a continuous activity; if you want to be more stable, you can add keepalive:<br/><code>crontab -e</code>→ Join<code>*/30 * * * * echo "keepalive $(date)" &gt;&gt; ~/keepalive.log</code></p>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+<p style="font-weight:600;margin-bottom:4px">Q: Do I need to restart after updating?</p>
+<p style="font-size:13px;color:var(--dim)"><code>apt upgrade</code>After updating the kernel, you need to<code>sudo reboot</code>Effective first;<code>hermes git pull --rebase</code>After updating the source code, you need to<code>sudo systemctl restart hermes-gateway</code>.</p>
+</div>
+</div>
+</div>
+13.WebUI
+<div class="section" id="webui">
+<h2 class="section-title"><span class="num">13</span>Advanced: Hermes WebUI (optional)</h2>
+<p class="section-desc">Want to interact with the Agent using the browser interface without using SSH? Just install WebUI.</p>
+<div class="step-list" style="counter-reset:step 0">
+<div class="step-item">
+<h3>Clone + set password</h3>
+<div class="cmd">cd ~
+git clone https://github.com/nesquena/hermes-webui.git hermes-webui
+cd hermes-webui
+echo "HERMES_WEBUI_PASSWORD=Set a strong password" &gt; .env</div>
+</div>
+<div class="step-item">
+<h3>Build systemd service</h3>
+<div class="cmd">sudo nano /etc/systemd/system/hermes-webui.service</div>
+<div class="cmd">[Unit]
+Description=Hermes WebUI
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/hermes-webui
+ExecStart=/home/ubuntu/hermes-webui/start.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</div>
+</div>
+<div class="step-item">
+<h3>Launch + Access</h3>
+<div class="cmd">sudo systemctl daemon-reload
+sudo systemctl enable hermes-webui
+sudo systemctl start hermes-webui</div>
+<p>Open browser<code>http://&lt;Public IP&gt;:8787</code>, log in with the .env password. Remember OCI Security List to pass 8787.</p>
+</div>
+<div class="step-item">
+<h3>(Optional) Nginx reverse generation + HTTPS</h3>
+<div class="cmd">sudo apt install nginx certbot python3-certbot-nginx -y
+sudo nano /etc/nginx/sites-available/hermes-webui</div>
+<div class="cmd">server {
+    listen 80;
+    server_name ai.yourdomain.com;
+    client_max_body_size 500M;
+    location/{
+        proxy_pass http://127.0.0.1:8787;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}</div>
+<div class="cmd">sudo ln -s /etc/nginx/sites-available/hermes-webui /etc/nginx/sites-enabled/
+sudo nginx -t &amp;&amp; sudo systemctl restart nginx
+sudo certbot --nginx -d ai.yourdomain.com</div>
+</div>
+</div>
+</div>
+14. Backup
+<div class="section" id="backup">
+<h2 class="section-title"><span class="num">14</span>Backup and maintenance recommendations</h2>
+<h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎14.1 Regular backup (the most important files)</h3>
+<div class="cmd">tar -czvf hermes-backup-$(date +%Y%m%d).tar.gz \
+  ~/.hermes/config.yaml ~/.hermes/.env ~/.hermes/SOUL.md \
+  ~/.hermes/logs/ /etc/systemd/system/hermes-gateway.service
+
+# Pull back to local
+scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
+<p style="font-size:13px;color:var(--dim)"><code>config.yaml</code>(setting),<code>.env</code>(key),<code>SOUL.md</code>(long-term memory), systemd service files - these four additions are the "soul" of the machine, without them they are the same as starting from scratch.</p>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎14.2 Maintenance rhythm</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Frequency</th><th>What to do</th></tr>
+<tr><td>weekly</td><td><code>sudo apt update &amp;&amp; sudo apt upgrade -y</code>+<code>sudo apt autoremove -y</code></td></tr>
+<tr><td>monthly</td><td><code>sudo journalctl --vacuum-time=30d</code>;<code>df -h</code>/<code>free -h</code>Check</td></tr>
+<tr><td>every 3-6 months</td><td>rotation API Key, check Drive/remote backup integrity</td></tr>
+</table>
+</div>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎14.3 Safety recommendations</h3>
+<ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
+<li>Regularly update the system package; after kernel update<code>sudo reboot</code></li>
+<li>It’s not easy to use root to run Hermes (use ubuntu user)</li>
+<li>Limit<code>TELEGRAM_ALLOWED_USERS</code>, to prevent unauthorized use</li>
+<li>Install fail2ban to prevent brute force cracking:<code>sudo apt install fail2ban -y</code></li>
+<li>Regularly check API usage to avoid unexpected overspending</li>
+</ul>
+</div>
+Appendix
+<div class="section" id="appendix">
+<h2 class="section-title"><span class="num p-icon">attached</span>Appendix: File path + resource limit + completion list</h2>
+<h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎Overview of file paths</h3>
+<div class="table-wrap">
+<table>
+<tr><th>path</th><th>Description</th></tr>
+<tr><td><code>~/.local/bin/hermes</code></td><td>Hermes main program</td></tr>
+<tr><td><code>~/.hermes/config.yaml</code></td><td>main profile</td></tr>
+<tr><td><code>~/.hermes/.env</code></td><td>environment variables/keys</td></tr>
+<tr><td><code>~/.hermes/SOUL.md</code></td><td>System prompt words (long-term memory)</td></tr>
+<tr><td><code>~/.hermes/logs/gateway.log</code></td><td>Gateway log</td></tr>
+<tr><td><code>/etc/systemd/system/hermes-gateway.service</code></td><td>Gateway systemd service file</td></tr>
+</table>
+</div>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎OCI Always Free resource limit</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Resources</th><th>Limit</th></tr>
+<tr><td>ARM Ampere A1 Example</td><td>Up to 4 OCPU + 24GB RAM</td></tr>
+<tr><td>x86 AMD instance</td><td>Up to 2 E2.1.Micro (1/8 OCPU + 1GB each)</td></tr>
+<tr><td>Total boot disk capacity</td><td>200GB (shared by all instances)</td></tr>
+<tr><td>Public IPv4</td><td>up to 6</td></tr>
+<tr><td>Network bandwidth</td><td>1 Gbps per vCPU</td></tr>
+</table>
+</div>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎Deployment completion checklist</h3>
+<div class="table-wrap">
+<table>
+<tr><th>✅</th><th>Check items</th></tr>
+<tr><td>□</td><td>VM created (ARM 4 OCPU / 24GB) and SSH connected to</td></tr>
+<tr><td>□</td><td><code>hermes --version</code>There is output</td></tr>
+<tr><td>□</td><td>DeepSeek API Key is valid (curl 200)</td></tr>
+<tr><td>□</td><td>systemd service active + enabled, see the log<code>✓ telegram connected</code></td></tr>
+<tr><td>□</td><td>Telegram actual test has a reply</td></tr>
+<tr><td>□</td><td>SOUL.md has set up Traditional Chinese reply</td></tr>
+<tr><td>□</td><td>OCI Security List + UFW two-layer firewall is enabled</td></tr>
+<tr><td>□</td><td>Backup strategy has been established (tar.gz + pull back to local)</td></tr>
+</table>
+</div>
+</div>
+Related links
+<div class="link-block" style="margin-top:16px">
+<h3>Related links</h3>
+<div class="link-row"><span class="label">Hermes Agent</span><a href="https://github.com/NousResearch/hermes-agent" target="_blank">github.com/NousResearch/hermes-agent</a> <span class="badge ok">MIT open source</span></div>
+<div class="link-row"><span class="label">Oracle Free Tier</span><a href="https://www.oracle.com/cloud/free/" target="_blank">oracle.com/cloud/free</a></div>
+<div class="link-row"><span class="label">DeepSeek Platform</span><a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a></div>
+<div class="link-row"><span class="label">Hermes WebUI</span><a href="https://github.com/nesquena/hermes-webui" target="_blank">github.com/nesquena/hermes-webui</a></div>
+<div class="link-row"><span class="label">Hermes Guide</span><a href="https://forumdata-collab.github.io/hermes-mp3-guide/">Hermes Agent Music Download Guide</a></div>
+<div class="link-row"><span class="label">CF Guide</span><a href="https://forumdata-collab.github.io/hermes-cf-guide/">Hermes Agent × Cloudflare AI Supplementary Guide</a></div>
+<div class="link-row"><span class="label">Scientific Internet</span><a href="https://forumdata-collab.github.io/hermes-gfw-guide/">Oracle VM + Cloudflare dual-channel scientific Internet practice</a></div>
+</div>
+<div class="footer">
+<a href="https://github.com/forumdata-collab" target="_blank">GitHub</a>· All personally tested · All pitfalls have been stepped on for you
+    · Nous Research</div>
+</div>
+</body>
+</html>
