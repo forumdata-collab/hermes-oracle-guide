@@ -3,7 +3,7 @@ html
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="如何在 Oracle VM 免费部署 Hermes Agent — OCI Free Tier ARM 实战指南 · 4 vCPU / 24GB 永久免费 · systemd 24/7 运行 · 全部踩坑亲测" name="description"/>
+<meta content="如何在 Oracle VM 免费部署 Hermes Agent — OCI Free Tier ARM 实战指南 · 2 vCPU / 12GB 永久免费（2026-06-15 起）· systemd 24/7 运行 · 全部踩坑亲测" name="description"/>
 <title>如何在 Oracle VM 免费部署 Hermes Agent · Nous Research</title>
 <style>
 :root{--bg1:#0f0c29;--bg2:#302b63;--bg3:#24243e;--card:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.08);--text:#e8e8e8;--dim:rgba(255,255,255,0.45);--accent:#6c8cff;--green:#4ade80;--orange:#fb923c;--red:#f87171;--purple:#a78bfa;--teal:#2dd4bf;--cyan:#22d3ee;--teal-dim:rgba(45,212,191,0.12);--cyan-dim:rgba(34,211,238,0.12)}
@@ -108,7 +108,7 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 <div class="hero">
 <div class="hero-badge">Nous Research · MIT 开源 · 2026</div>
 <h1>如何在 Oracle VM 免费部署 Hermes Agent</h1>
-<p>OCI Free Tier ARM 实战 · 4 vCPU / 24GB RAM 永久免费 · systemd 24/7 运行<br/>零成本慨云端 AI Agent，所有踩坑已经替你踩平</p>
+<p>OCI Free Tier ARM 实战 · 2 vCPU / 12GB RAM 永久免费（2026-06-15 起）· systemd 24/7 运行<br/>零成本慨云端 AI Agent，所有踩坑已经替你踩平</p>
 <div class="disclaimer">⚡ 本指南以 2026-08-01 实测为准。所有资源必须维持喺「Always Free」额度内，超出会收费。</div>
 </div>
 目录
@@ -143,7 +143,7 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 </div>
 <p style="font-size:13px;color:var(--dim);text-align:center;margin-bottom:20px">systemd 服务管理：开机自启、崩溃自动重启、断开 SSH 都照常运行。</p>
 <div class="feature-grid">
-<div class="feature-card"><div class="f-icon">💰</div><h3>永久免费</h3><p>ARM 4 vCPU + 24GB RAM + 200GB 磁碟，唔使信用卡长期扣费</p></div>
+<div class="feature-card"><div class="f-icon">💰</div><h3>永久免费</h3><p>ARM 2 vCPU + 12GB RAM + 200GB 磁碟（2026-06-15 起），唔使信用卡长期扣费</p></div>
 <div class="feature-card"><div class="f-icon">🔄</div><h3>模型自由</h3><p>DeepSeek / OpenAI / Anthropic / Google 任拣，换供应商改 config 就得</p></div>
 <div class="feature-card"><div class="f-icon">💬</div><h3>Telegram 原生</h3><p>内建 Gateway，一条 systemd 服务即 24/7 自动回覆</p></div>
 <div class="feature-card"><div class="f-icon">🖥️</div><h3>零运维焦虑</h3><p>崩溃自动重启 + journald 日志 + 远端备份，瞓觉都唔使理</p></div>
@@ -161,7 +161,7 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 <div class="step-item">
 <h3>拣 Home Region<span class="badge need">关键</span></h3>
 <p>务必拣<strong>支援 Ampere ARM 实例</strong>慨区域（Home Region 之后唔改得）：<br/>Osaka / Tokyo / Paris / Frankfurt / Ashburn / Phoenix 都支援。</p>
-<div class="tip red">Home Region 拣错咗就冇 ARM 实例 — 呢个决定咗你之后有冇 4 vCPU 免费机用。</div>
+<div class="tip red">Home Region 拣错咗就冇 ARM 实例 — 呢个决定咗你之后有冇 2 vCPU 免费机用。</div>
 </div>
 <div class="step-item">
 <h3>信用卡验证</h3>
@@ -192,7 +192,7 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 <div class="table-wrap">
 <table>
 <tr><th>方案</th><th>规格</th><th>建议</th></tr>
-<tr><td>ARM Ampere A1</td><td><code>VM.Standard.A1.Flex</code>— 4 OCPU + 24GB RAM</td><td class="ok">✅ 主力（Free Tier 最慷慨配置）</td></tr>
+<tr><td>ARM Ampere A1</td><td><code>VM.Standard.A1.Flex</code>— 2 OCPU + 12GB RAM（2026-06-15 前系 4/24）</td><td class="ok">✅ 主力（免费额度内最大配置）</td></tr>
 <tr><td>x86 Micro</td><td><code>VM.Standard.E2.1.Micro</code>— 1/8 OCPU + 1GB</td><td class="no">❌ 太细，仅适合测试</td></tr>
 </table>
 </div>
@@ -500,7 +500,7 @@ The user speaks Chinese. Never use English unless the user explicitly asks.</div
 </div>
 <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
 <p style="font-weight:600;margin-bottom:4px">Q：记忆体不足（OOM）？</p>
-<p style="font-size:13px;color:var(--dim)">用 ARM 4 vCPU / 24GB 实例基本上唔会遇到。 x86 micro 先要加 Swap：<br/><code>sudo fallocate -l 4G /swapfile &amp;&amp; sudo chmod 600 /swapfile &amp;&amp; sudo mkswap /swapfile &amp;&amp; sudo swapon /swapfile</code><br/>再加入<code>/etc/fstab</code>永久生效。</p>
+<p style="font-size:13px;color:var(--dim)">用 ARM 2 vCPU / 12GB 实例基本上唔会遇到。 x86 micro 先要加 Swap：<br/><code>sudo fallocate -l 4G /swapfile &amp;&amp; sudo chmod 600 /swapfile &amp;&amp; sudo mkswap /swapfile &amp;&amp; sudo swapon /swapfile</code><br/>再加入<code>/etc/fstab</code>永久生效。</p>
 </div>
 <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
 <p style="font-weight:600;margin-bottom:4px">Q：Oracle 会唔会回收我部机？</p>
