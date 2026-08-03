@@ -128,6 +128,7 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 <a href="#faq">12 جمع الدوس</a>
 <a href="#webui">13WebUI</a>
 <a href="#backup">14 صيانة النسخ الاحتياطي</a>
+<a href="#freetier2026">15 تخفيض الطبقة المجانية</a>
 </div>
 0. الهندسة المعمارية
 <div class="section" id="arch">
@@ -602,6 +603,47 @@ scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
 </ul>
 </div>
 زائدة
+<!-- 15. تخفيض الطبقة المجانية 2026 -->
+<div class="section" id="freetier2026">
+  <h2 class="section-title"><span class="num">15</span> ⚠️ 2026-06-15: Oracle خفّض الطبقة المجانية بصمت</h2>
+  <p style="font-size:13px;color:var(--dim)">في 2026-06-15 غيّرت Oracle <b>بصمت</b> وثائق Always Free بدون أي إعلان أو بريد إلكتروني: انخفض حد ARM من <b>4 OCPU / 24GB → 2 OCPU / 12GB</b> (السقف الشهري 3,000 OCPU-hrs + 18,000 GB-hrs → <b>1,500 + 9,000</b>). حركة المرور الصادرة تبقى <b>10TB/شهر</b> (دون تغيير).</p>
+  <div class="table-wrap">
+    <table>
+      <tr><th>التكوين (شغّال طوال الشهر)</th><th>الاستهلاك</th><th>السقف الجديد 1,500 + 9,000</th></tr>
+      <tr><td>4 OCPU / 24GB (قديم)</td><td>2,920 OCPU-hrs + 17,520 GB-hrs</td><td><span class="badge warn">❌ تجاوز مزدوج</span></td></tr>
+      <tr><td>2 OCPU / 12GB (جديد)</td><td>1,460 OCPU-hrs + 8,760 GB-hrs</td><td><span class="badge ok">✅ مناسب تمامًا</span></td></tr>
+    </table>
+  </div>
+  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎الحساب المجاني مقابل PAYG — مصير مختلف</h3>
+  <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
+    <li><b>الحسابات المجانية البحتة</b>: التجاوز → خطر إيقاف المثيل قسريًا (قلّص إلى 2/12 للأمان)</li>
+    <li><b>PAYG</b>: إجابات دعم Oracle متناقضة (البعض يقول غير متأثر) — أسوأ حالة هي الفوترة على التجاوز (2 OCPU + 12GB ≈ 27$ شهريًا)، بدون إيقاف قسري، يمكنك الانتظار والمراقبة</li>
+  </ul>
+  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎إجماع المجتمع (2026-07)</h3>
+  <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
+    <li>Reddit r/selfhosted PSA (1.5K صوت): "قلّص قبل 15 يونيو لتجنب الرسوم"</li>
+    <li>التنفيذ غير متسق: حسابات كثيرة ما زالت تشغّل 4/24 دون مشاكل؛ قائمة الأسعار الرسمية ما زالت تعرض 3K/18K</li>
+    <li>⚠️ الخطر الأكبر: نقص سعة ARM (تقارير كثيرة عن "سعة غير كافية") — إذا توقف مثيلك، قد لا تستطيع حتى إعادة إنشاء 2/12</li>
+  </ul>
+  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎التأمين الثلاثي (مُجرّب)</h3>
+  <ol style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
+    <li><b>OCI Boot Volume Backup</b>: Console → Compute → Instance → Boot volume → Create backup (استعادة كاملة سحابيًا، ~10 دقائق)</li>
+    <li><b>نسخة احتياطية خارجية على Drive</b>: tar.gz للإعدادات (~/.hermes, nginx, systemd, crontab) يوميًا → Google Drive (انظر §14)</li>
+    <li><b>لا توقف المثيل عشوائيًا</b>: خلال فترة grandfather قد لا تستعيده أبدًا</li>
+  </ol>
+  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎بدائل (إذا انهارت Oracle)</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>الحاجة</th><th>الخيار</th><th>التكلفة</th></tr>
+      <tr><td>IP ياباني + الأرخص</td><td>الاحتفاظ بـ Oracle 2/12</td><td>$0</td></tr>
+      <tr><td>IP ياباني (مدفوع)</td><td>Contabo أوساكا 4vCPU/8GB ｜ Vultr طوكيو 1-2GB</td><td>~€7/شهر ｜ $5-6/شهر</td></tr>
+      <tr><td>بدون حاجة لـ IP ياباني</td><td>RackNerd 1GB ｜ GCP e2-micro</td><td>~$1/شهر ｜ $0</td></tr>
+      <tr><td>لأغراض GFW</td><td>VLESS/REALITY (يعمل على أي VPS) + CF Worker احتياطي</td><td>من $0</td></tr>
+    </table>
+  </div>
+  <p style="font-size:12px;color:var(--dim)">💡 ملاحظة GFW: عناوين IP لمراكز بيانات Oracle/Contabo تميل للحظر مع الوقت؛ REALITY يقاوم الفحص النشط؛ CF Worker (edgetunnel) قناة احتياطية مجانية.</p>
+</div>
+
 <div class="section" id="appendix">
 <h2 class="section-title"><span class="num p-icon">مُرفَق</span>الملحق: مسار الملف + حد الموارد + قائمة الإكمال</h2>
 <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎نظرة عامة على مسارات الملفات</h3>
@@ -620,7 +662,7 @@ scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
 <div class="table-wrap">
 <table>
 <tr><th>الموارد</th><th>حد</th></tr>
-<tr><td>ARM أمبير A1 مثال</td><td>ما يصل إلى 4 وحدات معالجة مركزية + 24 جيجابايت من ذاكرة الوصول العشوائي</td></tr>
+<tr><td>ARM أمبير A1 مثال</td><td>2 OCPU + 12GB رام (انخفض منذ 2026-06-15؛ الحسابات القديمة تستطيع الاستمرار بـ 4/24 حتى توقف المثيل)</td></tr>
 <tr><td>مثيل AMD x86</td><td>ما يصل إلى 2 E2.1.Micro (1/8 OCPU + 1 جيجابايت لكل منهما)</td></tr>
 <tr><td>إجمالي سعة قرص التمهيد</td><td>200 جيجابايت (مشتركة في جميع الحالات)</td></tr>
 <tr><td>IPv4 العام</td><td>ما يصل إلى 6</td></tr>
@@ -631,7 +673,7 @@ scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
 <div class="table-wrap">
 <table>
 <tr><th>✅</th><th>تحقق من العناصر</th></tr>
-<tr><td>□</td><td>تم إنشاء VM (ARM 4 OCPU / 24GB) وتم توصيل SSH به</td></tr>
+<tr><td>□</td><td>تم إنشاء VM (ARM 2 OCPU / 12GB) وتم توصيل SSH به</td></tr>
 <tr><td>□</td><td><code>hermes --version</code>هناك الإخراج</td></tr>
 <tr><td>□</td><td>مفتاح DeepSeek API صالح (curl 200)</td></tr>
 <tr><td>□</td><td>خدمة systemd نشطة + ممكّنة، راجع السجل<code>✓ telegram connected</code></td></tr>
