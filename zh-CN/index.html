@@ -617,8 +617,9 @@ scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
   <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎纯免费 vs PAYG 命运不同</h3>
   <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
     <li><b>纯免费账户</b>：超额 → 随时被强制停机（缩到 2/12 才安全）</li>
-    <li><b>PAYG</b>：官方 Support 说法矛盾（有人说不受影响）——超额最多被收费（2 OCPU + 12GB ≈ USD$27/月），不会停机，可以观望</li>
+    <li><b>PAYG</b>：✅ 官方客服书面确认（2026-08-03）——<b>不受影响</b>，现有 4 OCPU/24GB 照用，不用缩小、不会被收费、没有限期</li>
   </ul>
+  <div class="tip green">⚠️ 唯一风险（官方有提）：实例<b>正常停止 → 可以再启动</b>；但若被<b>终止</b>（terminate），重建同配置要看大阪区当时 ARM 容量。保险已就绪：OCI boot volume backup + Drive 异地备份。</div>
   <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎社群共识（2026-07）</h3>
   <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
     <li>Reddit r/selfhosted PSA（1.5K upvotes）：「6 月 15 日前 resize 避免被收费」</li>
