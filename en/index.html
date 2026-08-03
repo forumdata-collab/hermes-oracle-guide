@@ -3,7 +3,7 @@ html
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="How to deploy Hermes Agent on Oracle VM for free - OCI Free Tier ARM Practical Guide · 4 vCPU / 24GB permanently free · systemd 24/7 running · All pitfalls for personal testing" name="description"/>
+<meta content="How to deploy Hermes Agent on Oracle VM for free - OCI Free Tier ARM Practical Guide · 2 vCPU / 12GB permanently free (since 2026-06-15) · systemd 24/7 running · All pitfalls for personal testing" name="description"/>
 <title>How to deploy Hermes Agent on Oracle VM for free · Nous Research</title>
 <style>
 :root{--bg1:#0f0c29;--bg2:#302b63;--bg3:#24243e;--card:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.08);--text:#e8e8e8;--dim:rgba(255,255,255,0.45);--accent:#6c8cff;--green:#4ade80;--orange:#fb923c;--red:#f87171;--purple:#a78bfa;--teal:#2dd4bf;--cyan:#22d3ee;--teal-dim:rgba(45,212,191,0.12);--cyan-dim:rgba(34,211,238,0.12)}
@@ -108,7 +108,7 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 <div class="hero">
 <div class="hero-badge">Nous Research · MIT Open Source · 2026</div>
 <h1>How to deploy Hermes Agent on Oracle VM for free</h1>
-<p>OCI Free Tier ARM in practice · 4 vCPU / 24GB RAM Free forever · systemd running 24/7<br/>Zero-cost cloud AI Agent, all pitfalls have been eliminated for you</p>
+<p>OCI Free Tier ARM in practice · 2 vCPU / 12GB RAM Free forever (since 2026-06-15) · systemd running 24/7<br/>Zero-cost cloud AI Agent, all pitfalls have been eliminated for you</p>
 <div class="disclaimer">⚡ This guide is based on actual measurement on 2026-08-01. All resources must be maintained within the "Always Free" quota, and fees will be charged if they are exceeded.</div>
 </div>
 Directory
@@ -143,7 +143,7 @@ Directory
 </div>
 <p style="font-size:13px;color:var(--dim);text-align:center;margin-bottom:20px">systemd service management: auto-start at boot, auto-restart after crash, and disconnect SSH all run as usual.</p>
 <div class="feature-grid">
-<div class="feature-card"><div class="f-icon">💰</div><h3>Free forever</h3><p>ARM 4 vCPU + 24GB RAM + 200GB disk, no long-term credit card charges</p></div>
+<div class="feature-card"><div class="f-icon">💰</div><h3>Free forever</h3><p>ARM 2 vCPU + 12GB RAM + 200GB disk (since 2026-06-15), no long-term credit card charges</p></div>
 <div class="feature-card"><div class="f-icon">🔄</div><h3>Model freedom</h3><p>You can choose from DeepSeek / OpenAI / Anthropic / Google, just change the supplier and change the config.</p></div>
 <div class="feature-card"><div class="f-icon">💬</div><h3>Telegram native</h3><p>Built-in Gateway, a systemd service that automatically replies 24/7</p></div>
 <div class="feature-card"><div class="f-icon">🖥️</div><h3>Zero operational anxiety</h3><p>Automatic restart after crash + journald log + remote backup, you can’t even sleep.</p></div>
@@ -161,7 +161,7 @@ Directory
 <div class="step-item">
 <h3>Pick Home Region<span class="badge need">key</span></h3>
 <p>Be sure to pick<strong>Supports Ampere ARM instances</strong>Region (Cannot be changed after Home Region):<br/>Osaka / Tokyo / Paris / Frankfurt / Ashburn / Phoenix are all supported.</p>
-<div class="tip red">If you choose the wrong Home Region, there will be no ARM instances - this will determine whether you will have 4 vCPU free machines later.</div>
+<div class="tip red">If you choose the wrong Home Region, there will be no ARM instances - this will determine whether you will have 2 vCPU free machines later.</div>
 </div>
 <div class="step-item">
 <h3>Credit card verification</h3>
@@ -192,7 +192,7 @@ Directory
 <div class="table-wrap">
 <table>
 <tr><th>Plan</th><th>Specifications</th><th>Suggestions</th></tr>
-<tr><td>ARM Ampere A1</td><td><code>VM.Standard.A1.Flex</code>— 4 OCPU + 24GB RAM</td><td class="ok">✅ Main force (Free Tier’s most generous configuration)</td></tr>
+<tr><td>ARM Ampere A1</td><td><code>VM.Standard.A1.Flex</code>— 2 OCPU + 12GB RAM (was 4/24 before 2026-06-15)</td><td class="ok">✅ Main force (largest within free allowance)</td></tr>
 <tr><td>x86Micro</td><td><code>VM.Standard.E2.1.Micro</code>— 1/8 OCPU + 1GB</td><td class="no">❌ Too thin, only suitable for testing</td></tr>
 </table>
 </div>
@@ -500,7 +500,7 @@ The user speaks Chinese. Never use English unless the user explicitly asks.</div
 </div>
 <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
 <p style="font-weight:600;margin-bottom:4px">Q: Out of memory (OOM)?</p>
-<p style="font-size:13px;color:var(--dim)">Basically you will not encounter this with ARM 4 vCPU / 24GB instances. x86 micro needs to add Swap first:<br/><code>sudo fallocate -l 4G /swapfile &amp;&amp; sudo chmod 600 /swapfile &amp;&amp; sudo mkswap /swapfile &amp;&amp; sudo swapon /swapfile</code><br/>Join again<code>/etc/fstab</code>Effective permanently.</p>
+<p style="font-size:13px;color:var(--dim)">Basically you will not encounter this with ARM 2 vCPU / 12GB instances. x86 micro needs to add Swap first:<br/><code>sudo fallocate -l 4G /swapfile &amp;&amp; sudo chmod 600 /swapfile &amp;&amp; sudo mkswap /swapfile &amp;&amp; sudo swapon /swapfile</code><br/>Join again<code>/etc/fstab</code>Effective permanently.</p>
 </div>
 <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
 <p style="font-weight:600;margin-bottom:4px">Q: Will Oracle recycle my machine?</p>
