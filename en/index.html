@@ -617,8 +617,9 @@ Appendix
   <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎Pure free vs PAYG — different fates</h3>
   <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
     <li><b>Pure free accounts</b>: over the cap → risk of forced instance termination (shrink to 2/12 to be safe)</li>
-    <li><b>PAYG</b>: Oracle Support gives conflicting answers (some say unaffected). Worst case you get billed for the excess (2 OCPU + 12GB ≈ USD$27/month) — no forced stop, so you can wait and see</li>
+    <li><b>PAYG</b>: ✅ Official written confirmation (2026-08-03) — <b>not affected</b>; keep your existing 4 OCPU/24GB, no resize, no billing, no deadline</li>
   </ul>
+  <div class="tip green">⚠️ Only caveat (acknowledged by Oracle): a <b>stopped</b> instance can be started again normally; but if it is <b>terminated</b>, recreating the same configuration depends on ARM capacity in Osaka at that time. Insurance in place: OCI boot volume backup + Drive off-site backup.</div>
   <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎Community consensus (2026-07)</h3>
   <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
     <li>Reddit r/selfhosted PSA (1.5K upvotes): "Resize by June 15 to avoid charges"</li>
