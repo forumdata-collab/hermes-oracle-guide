@@ -5,6 +5,21 @@ html
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="如何在 Oracle VM 免费部署 Hermes Agent — OCI Free Tier ARM 实战指南 · 2 vCPU / 12GB 永久免费（2026-06-15 起）· systemd 24/7 运行 · 全部踩坑亲测" name="description"/>
 <title>如何在 Oracle VM 免费部署 Hermes Agent · Nous Research</title>
+<link rel="canonical" href="https://forumdata-collab.github.io/hermes-oracle-guide/zh-CN/">
+<link rel="alternate" hreflang="zh-Hant" href="https://forumdata-collab.github.io/hermes-oracle-guide/">
+<link rel="alternate" hreflang="en" href="https://forumdata-collab.github.io/hermes-oracle-guide/en/">
+<link rel="alternate" hreflang="zh-CN" href="https://forumdata-collab.github.io/hermes-oracle-guide/zh-CN/">
+<link rel="alternate" hreflang="ar" href="https://forumdata-collab.github.io/hermes-oracle-guide/ar/">
+<link rel="alternate" hreflang="x-default" href="https://forumdata-collab.github.io/hermes-oracle-guide/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Nous Research Hermes Agent Guide">
+<meta property="og:url" content="https://forumdata-collab.github.io/hermes-oracle-guide/zh-CN/">
+<meta property="og:title" content="如何在 Oracle VM 免费部署 Hermes Agent · Nous Research">
+<meta property="og:description" content="如何在 Oracle VM 免费部署 Hermes Agent — OCI Free Tier ARM 实战指南 · 2 vCPU / 12GB 永久免费（2026-06-15 起）· systemd 24/7 运行 · 全部踩坑亲测">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="zh_TW">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="ar_AR">
 <style>
 :root{--bg1:#0f0c29;--bg2:#302b63;--bg3:#24243e;--card:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.08);--text:#e8e8e8;--dim:rgba(255,255,255,0.45);--accent:#6c8cff;--green:#4ade80;--orange:#fb923c;--red:#f87171;--purple:#a78bfa;--teal:#2dd4bf;--cyan:#22d3ee;--teal-dim:rgba(45,212,191,0.12);--cyan-dim:rgba(34,211,238,0.12)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -114,8 +129,8 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 <div class="hero">
 <div class="hero-badge">Nous Research · MIT 开源 · 2026</div>
 <h1>如何在 Oracle VM 免费部署 Hermes Agent</h1>
-<p>OCI Free Tier ARM 实战 · 2 vCPU / 12GB RAM 永久免费（2026-06-15 起）· systemd 24/7 运行<br/>零成本慨云端 AI Agent，所有踩坑已经替你踩平</p>
-<div class="disclaimer">⚡ 本指南以 2026-08-01 实测为准。所有资源必须维持喺「Always Free」额度内，超出会收费。</div>
+<p>OCI Free Tier ARM 实战 · 2 vCPU / 12GB RAM 永久免费（2026-06-15 起）· systemd 24/7 运行<br/>零成本的云端 AI Agent，所有踩坑已经替你踩平</p>
+<div class="disclaimer">⚡ 本指南以 2026-08-01 实测为准。所有资源必须维持在「Always Free」额度内，超出会收费。</div>
 </div>
 目录
 <div class="toc">
@@ -139,8 +154,8 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 </div>
 0. 架构
 <div class="section" id="arch">
-<h2 class="section-title"><span class="num">0</span>点解要咁部署（架构概览）</h2>
-<p class="section-desc">Hermes Agent 系 Nous Research 开发慨开源 AI Agent 框架（MIT 协议）——喺终端度读档案、写程式码、执行命令、操控浏览器，唔绑定任何模型厂商，仲内建 Telegram Gateway。放喺 Oracle 永久免费 VM 上，就变成 24/7 唔断线慨云端 AI Agent。</p>
+<h2 class="section-title"><span class="num">0</span>为什么要这样部署（架构概览）</h2>
+<p class="section-desc">Hermes Agent 系 Nous Research 开发的开源 AI Agent 框架（MIT 协议）——在终端里读文件、写代码、执行命令、操控浏览器，不绑定任何模型厂商，还内置 Telegram Gateway。放在 Oracle 永久免费 VM 上，就变成 24/7 不断线的云端 AI Agent。</p>
 <div class="arch-flow">
 <span>Telegram 讯息</span><span class="arrow">→</span>
 <span>Hermes Gateway</span><span class="arrow">→</span>
@@ -150,10 +165,10 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 </div>
 <p style="font-size:13px;color:var(--dim);text-align:center;margin-bottom:20px">systemd 服务管理：开机自启、崩溃自动重启、断开 SSH 都照常运行。</p>
 <div class="feature-grid">
-<div class="feature-card"><div class="f-icon">💰</div><h3>永久免费</h3><p>ARM 2 vCPU + 12GB RAM + 200GB 磁碟（2026-06-15 起），唔使信用卡长期扣费</p></div>
+<div class="feature-card"><div class="f-icon">💰</div><h3>永久免费</h3><p>ARM 2 vCPU + 12GB RAM + 200GB 磁碟（2026-06-15 起），无需信用卡长期扣费</p></div>
 <div class="feature-card"><div class="f-icon">🔄</div><h3>模型自由</h3><p>DeepSeek / OpenAI / Anthropic / Google 任拣，换供应商改 config 就得</p></div>
 <div class="feature-card"><div class="f-icon">💬</div><h3>Telegram 原生</h3><p>内建 Gateway，一条 systemd 服务即 24/7 自动回覆</p></div>
-<div class="feature-card"><div class="f-icon">🖥️</div><h3>零运维焦虑</h3><p>崩溃自动重启 + journald 日志 + 远端备份，瞓觉都唔使理</p></div>
+<div class="feature-card"><div class="f-icon">🖥️</div><h3>零运维焦虑</h3><p>崩溃自动重启 + journald 日志 + 远端备份，睡觉都不用管</p></div>
 </div>
 </div>
 1. 注册
@@ -167,12 +182,12 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 </div>
 <div class="step-item">
 <h3>拣 Home Region<span class="badge need">关键</span></h3>
-<p>务必拣<strong>支援 Ampere ARM 实例</strong>慨区域（Home Region 之后唔改得）：<br/>Osaka / Tokyo / Paris / Frankfurt / Ashburn / Phoenix 都支援。</p>
-<div class="tip red">Home Region 拣错咗就冇 ARM 实例 — 呢个决定咗你之后有冇 2 vCPU 免费机用。</div>
+<p>务必选择<strong>支援 Ampere ARM 实例</strong>的区域（Home Region 之后不可更改）：<br/>Osaka / Tokyo / Paris / Frankfurt / Ashburn / Phoenix 都支援。</p>
+<div class="tip red">Home Region 选错了就没有 ARM 实例 — 这决定了你之后有没有 2 vCPU 免费机可用。</div>
 </div>
 <div class="step-item">
 <h3>信用卡验证</h3>
-<p>要提供有效信用卡或扣帐卡。 Oracle 会暂时扣约<strong>$1 美元</strong>验证，几日后退还。<strong>唔接受虚拟卡或预付卡。</strong></p>
+<p>要提供有效信用卡或扣帐卡。 Oracle 会暂时扣约<strong>$1 美元</strong>验证，几日后退还。<strong>不接受虚拟卡或预付卡。</strong></p>
 </div>
 <div class="step-item">
 <h3>等启用</h3>
@@ -180,7 +195,7 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 </div>
 </div>
 <div class="tip warn" style="margin-top:12px">
-<strong>⚠️ 免费唔等于无限：</strong>资源超出「Always Free」限制会产生费用。建议升级做 Pay-As-You-Go（仍 $0，但容量不足时可以解决，亦系免费 ARM 抢唔到容量慨解药）。</div>
+<strong>⚠️ 免费不等于无限：</strong>资源超出「Always Free」限制会产生费用。建议升级做 Pay-As-You-Go（仍 $0，但容量不足时可以解决，也是免费 ARM 抢不到容量的解法）。</div>
 </div>
 2. 建立 VM
 <div class="section" id="vm">
@@ -206,12 +221,12 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 </div>
 <div class="step-item">
 <h3>网络 + SSH 金钥</h3>
-<p>用预设 VCN/子网，勾选「Assign a public IPv4 address」。 SSH 拣「Paste public keys」，贴上你慨公钥（本地未有就先产生）：</p>
+<p>用预设 VCN/子网，勾选「Assign a public IPv4 address」。 SSH 拣「Paste public keys」，贴上你的公钥（本地未有就先产生）：</p>
 <div class="cmd">ssh-keygen -t rsa -b 4096 -C "your_email@example.com"</div>
 </div>
 <div class="step-item">
 <h3>加大开机磁碟到 200GB<span class="badge teal">免费上限</span></h3>
-<p>Show advanced options → Boot volume → 自订大小 → 输入<strong>200</strong>（GB）。预设得 50GB，迟下装嘢先嚟扩充冇咁方便。</p>
+<p>Show advanced options → Boot volume → 自订大小 → 输入<strong>200</strong>（GB）。默认只有 50GB，以后再扩充没那么方便。</p>
 </div>
 <div class="step-item">
 <h3>Create 并记低 Public IP</h3>
@@ -245,7 +260,7 @@ sudo ufw allow ssh
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw enable</div>
-<p>⚠️ 记住：<strong>Oracle 有两层防火墙</strong>— VM 入面慨 UFW/iptables 之外，仲有 OCI VCN 慨 Security List（第 10 节会讲）。两层都要开先通。</p>
+<p>⚠️ 记住：<strong>Oracle 有两层防火墙</strong>— VM 入面的 UFW/iptables 之外，仲有 OCI VCN 的 Security List（第 10 节会讲）。两层都要开先通。</p>
 </div>
 </div>
 </div>
@@ -262,14 +277,14 @@ sudo ufw enable</div>
 <h3>重新载入 + 验证</h3>
 <div class="cmd">source ~/.bashrc
 hermes --version</div>
-<p>出到版本号（例如<code>hermes 0.14.0</code>）即成功。安装路径喺<code>~/.local/bin/hermes</code>，设定喺<code>~/.hermes/</code>。</p>
+<p>出到版本号（例如<code>hermes 0.14.0</code>）即成功。安装路径在<code>~/.local/bin/hermes</code>，设置在<code>~/.hermes/</code>。</p>
 </div>
 </div>
 <div class="tip red" style="margin-top:12px">
-<strong>⚠️ ARM 实测坑：HTTP/2 下载失败。</strong>安装脚本喺 Node.js 下载时可能报<code>curl: (92) HTTP/2 stream error</code>。解法：<code>Ctrl+C</code>终止 → 手动用 HTTP/1.1 下载 ARM 版 Node.js：<div class="cmd" style="margin-top:6px">curl --http1.1 -L "https://nodejs.org/dist/v22.11.0/node-v22.11.0-linux-arm64.tar.gz" -o /tmp/node.tar.gz
+<strong>⚠️ ARM 实测坑：HTTP/2 下载失败。</strong>安装脚本在下载 Node.js 时可能报<code>curl: (92) HTTP/2 stream error</code>。解法：<code>Ctrl+C</code>终止 → 手动用 HTTP/1.1 下载 ARM 版 Node.js：<div class="cmd" style="margin-top:6px">curl --http1.1 -L "https://nodejs.org/dist/v22.11.0/node-v22.11.0-linux-arm64.tar.gz" -o /tmp/node.tar.gz
 mkdir -p ~/.hermes/node
 tar -xzf /tmp/node.tar.gz -C ~/.hermes/node --strip-components=1
-rm /tmp/node.tar.gz</div>再重新执行安装脚本，会跳过已下载慨 Node.js。</div>
+rm /tmp/node.tar.gz</div>再重新执行安装脚本，会跳过已下载的 Node.js。</div>
 </div>
 5. setup
 <div class="section" id="setup">
@@ -299,7 +314,7 @@ rm /tmp/node.tar.gz</div>再重新执行安装脚本，会跳过已下载慨 Nod
 <p class="section-desc">Hermes 支援任意供应商。以下用 DeepSeek 做例（性价比高、无需海外支付）。</p>
 <div class="step-list" style="counter-reset:step 0">
 <div class="step-item">
-<h3>攞 DeepSeek API Key</h3>
+<h3>获取 DeepSeek API Key</h3>
 <p><code>platform.deepseek.com</code>→ 注册/登入 → API Keys → 建立 Key（<code>sk-</code>开头）。新用户有免费额度。</p>
 </div>
 <div class="step-item">
@@ -320,7 +335,7 @@ base_url: https://api.deepseek.com/v1</div>
 </div>
 </div>
 <div class="tip red" style="margin-top:12px">
-<strong>⚠️ 踩坑：DeepSeek Key 有两种！</strong>用过 Claude Code + DeepSeek 慨人可能攞错 — 一个系 Claude Code 用慨<code>ANTHROPIC_AUTH_TOKEN</code>，一个系 DeepSeek 平台原生 Key，<strong>两者格式相同但值唔同</strong>。用平台原始 Key；报 401 就系 Key 错。快速测试：<div class="cmd" style="margin-top:6px">curl https://api.deepseek.com/v1/chat/completions \
+<strong>⚠️ 踩坑：DeepSeek Key 有两种！</strong>用过 Claude Code + DeepSeek 的人可能拿错 — 一个是 Claude Code 用的<code>ANTHROPIC_AUTH_TOKEN</code>，一个是 DeepSeek 平台原生 Key，<strong>两者格式相同但值不同</strong>。用平台原始 Key；报 401 就是 Key 错。快速测试：<div class="cmd" style="margin-top:6px">curl https://api.deepseek.com/v1/chat/completions \
   -H "Authorization: Bearer sk-你的key" \
   -H "Content-Type: application/json" \
   -d '{"model":"deepseek-v4-pro","messages":[{"role":"user","content":"hi"}]}'</div>200 = 有效，401 = 无效。</div>
@@ -328,7 +343,7 @@ base_url: https://api.deepseek.com/v1</div>
 7. Gateway systemd
 <div class="section" id="gateway">
 <h2 class="section-title"><span class="num">7</span>安装 Hermes Gateway（systemd 服务）</h2>
-<p class="section-desc">喺 Linux 伺服器上，Gateway 必须行 systemd 先做到：开机自启、崩溃自动重启、24/7 唔断线、断开 SSH 照跑。</p>
+<p class="section-desc">在 Linux 服务器上，Gateway 必须用 systemd 才能做到：开机自启、崩溃自动重启、24/7 不断线、断开 SSH 照样运行。</p>
 <div class="step-list" style="counter-reset:step 0">
 <div class="step-item">
 <h3>安装 Gateway</h3>
@@ -336,7 +351,7 @@ base_url: https://api.deepseek.com/v1</div>
 </div>
 <div class="step-item">
 <h3>手动建立 systemd 服务档<span class="badge need">核心步骤</span></h3>
-<p>⚠️<strong>最易中慨大坑：systemd 唔会读 .env 档！</strong>环境变数必须直接写入服务档，否则 Bot 会话「No messaging platforms enabled」。</p>
+<p>⚠️<strong>最容易踩的坑：systemd 不会读 .env 文件！</strong>环境变数必须直接写入服务档，否则 Bot 会话「No messaging platforms enabled」。</p>
 <div class="cmd">sudo nano /etc/systemd/system/hermes-gateway.service</div>
 <div class="cmd">[Unit]
 Description=Hermes Gateway Service
@@ -351,7 +366,7 @@ Restart=always
 RestartSec=10
 Environment=PATH=/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
 
-# 关键：systemd 唔读 .env，环境变数要直接写喺呢度！
+# 关键：systemd 不读 .env，环境变量必须直接写在这里！
 Environment=DEEPSEEK_API_KEY=sk-你的deepseek密钥
 Environment=TELEGRAM_BOT_TOKEN=你的Bot Token
 Environment=TELEGRAM_ALLOWED_USERS=你的Telegram数字ID
@@ -369,7 +384,7 @@ sudo systemctl enable hermes-gateway
 sudo systemctl start hermes-gateway</div>
 </div>
 <div class="step-item">
-<h3>验证 + 睇日志</h3>
+<h3>验证 + 看日志</h3>
 <div class="cmd">sudo systemctl status hermes-gateway
 sudo journalctl -u hermes-gateway -f</div>
 <p>状态显示<code>active (running)</code>，日志见到<code>✓ telegram connected</code>即成功。</p>
@@ -384,7 +399,7 @@ RuntimeMaxUse=100M</div>
 </div>
 </div>
 <div class="tip green" style="margin-top:12px">
-<strong>实测教训（我哋部机）：</strong>改服务档可以喺本地写好先上传 —<code>sudo cp</code>入<code>/etc/systemd/system/</code>再<code>daemon-reload</code>就得。另外<strong>Bot 上 systemd 之前一定要 pkill 旧慨 polling 进程</strong>，否则 Telegram 会报 409 Conflict（两个 getUpdates 同时争同一个 Bot）。最后<code>hermes git pull --rebase</code>更新完记得重启服务。</div>
+<strong>实测教训（我们的机器）：</strong>改服务档可以在本地写好再上传 —<code>sudo cp</code>入<code>/etc/systemd/system/</code>再<code>daemon-reload</code>即可。另外<strong>Bot 上 systemd 之前一定要 pkill 旧的 polling 进程</strong>，否则 Telegram 会报 409 Conflict（两个 getUpdates 同时争同一个 Bot）。最后<code>hermes git pull --rebase</code>更新完记得重启服务。</div>
 </div>
 8. Telegram
 <div class="section" id="telegram">
@@ -392,11 +407,11 @@ RuntimeMaxUse=100M</div>
 <div class="step-list" style="counter-reset:step 0">
 <div class="step-item">
 <h3>用 @BotFather 建 Bot</h3>
-<p>Telegram 搜寻<a href="https://t.me/BotFather" target="_blank">@BotFather</a>→<code>/newbot</code>→ 设名称/用户名 → 攞<strong>Bot Token</strong>（格式<code>123456:ABC-DEF1234ghiJKL</code>）。妥善保存，唔好泄漏。</p>
+<p>Telegram 搜寻<a href="https://t.me/BotFather" target="_blank">@BotFather</a>→<code>/newbot</code>→ 设名称/用户名 → 获取<strong>Bot Token</strong>（格式<code>123456:ABC-DEF1234ghiJKL</code>）。妥善保存，不要泄露。</p>
 </div>
 <div class="step-item">
-<h3>攞你慨 Telegram 数字 ID</h3>
-<p>搜寻<a href="https://t.me/userinfobot" target="_blank">@userinfobot</a>→<code>/start</code>→ 攞数字 ID（例如<code>123456789</code>）。</p>
+<h3>获取你的 Telegram 数字 ID</h3>
+<p>搜寻<a href="https://t.me/userinfobot" target="_blank">@userinfobot</a>→<code>/start</code>→ 获取数字 ID（例如<code>123456789</code>）。</p>
 </div>
 <div class="step-item">
 <h3>更新 systemd 服务档</h3>
@@ -410,11 +425,11 @@ sudo systemctl restart hermes-gateway</div>
 </div>
 <div class="step-item">
 <h3>验证</h3>
-<p>日志见到<code>✓ telegram connected</code>，然后喺 Telegram 同你慨 Bot 讲嘢，有回覆即成。</p>
+<p>日志见到<code>✓ telegram connected</code>，然后在 Telegram 与你的 Bot 对话，有回复即成。</p>
 </div>
 </div>
 <div class="tip info" style="margin-top:12px">
-<strong>故障排查口诀：</strong>Bot 冇反应 → ①<code>sudo systemctl status hermes-gateway</code>系咪 running → ② 日志<code>journalctl -u hermes-gateway -f</code>→ ③ 见到<code>No messaging platforms enabled</code>= Token 冇读到 → ④ 检查服务档 Environment → ⑤<code>daemon-reload</code>+<code>restart</code>→ ⑥ 再验证。</div>
+<strong>故障排查口诀：</strong>Bot 没反应 → ①<code>sudo systemctl status hermes-gateway</code>是不是 running → ② 日志<code>journalctl -u hermes-gateway -f</code>→ ③ 见到<code>No messaging platforms enabled</code>= Token 没读到 → ④ 检查服务档 Environment → ⑤<code>daemon-reload</code>+<code>restart</code>→ ⑥ 再验证。</div>
 </div>
 9. SOUL.md
 <div class="section" id="soul">
@@ -424,13 +439,13 @@ sudo systemctl restart hermes-gateway</div>
 <h3>编辑 SOUL.md</h3>
 <div class="cmd">cp ~/.hermes/SOUL.md ~/.hermes/SOUL.md.backup
 nano ~/.hermes/SOUL.md</div>
-<p>喺顶部加入语言规则：</p>
+<p>在顶部加入语言规则：</p>
 <div class="cmd">CRITICAL LANGUAGE RULE: You MUST reply in Chinese (繁体中文) at all times.
 The user speaks Chinese. Never use English unless the user explicitly asks.</div>
 </div>
 <div class="step-item">
 <h3>（可选）注入项目知识</h3>
-<p>SOUL.md 可以写入身份、技能、项目结构、程式码规范、常用命令 — 成为 Hermes 慨「长期记忆」，每次对话都引用。</p>
+<p>SOUL.md 可以写入身份、技能、项目结构、程式码规范、常用命令 — 成为 Hermes 的「长期记忆」，每次对话都引用。</p>
 </div>
 <div class="step-item">
 <h3>重启生效</h3>
@@ -442,7 +457,7 @@ The user speaks Chinese. Never use English unless the user explicitly asks.</div
 10. 防火墙
 <div class="section" id="firewall">
 <h2 class="section-title"><span class="num">10</span>防火墙与安全规则（两层都要开）</h2>
-<p class="section-desc">Oracle VM 有<strong>两层防火墙</strong>：OCI VCN 慨 Security List（云端层）+ 实例内慨 UFW（系统层）。两层都唔放行先会通。</p>
+<p class="section-desc">Oracle VM 有<strong>两层防火墙</strong>：OCI VCN 的 Security List（云端层）+ 实例内的 UFW（系统层）。两层都放行才会通。</p>
 <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎10.1 OCI Security List（云端层）</h3>
 <div class="step-list" style="counter-reset:step 0">
 <div class="step-item">
@@ -461,9 +476,9 @@ The user speaks Chinese. Never use English unless the user explicitly asks.</div
 </div>
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎10.2 实例防火墙（系统层）</h3>
 <div class="cmd">sudo ufw status verbose</div>
-<p style="font-size:13px;color:var(--dim)">应见到<code>22 / 80 / 443 ALLOW IN</code>。 Oracle Linux 用户如果 UFW 冇反应，可能要直接改 iptables。</p>
+<p style="font-size:13px;color:var(--dim)">应见到<code>22 / 80 / 443 ALLOW IN</code>。 Oracle Linux 用户如果 UFW 没反应，可能要直接改 iptables。</p>
 <div class="tip red" style="margin-top:12px">
-<strong>⚠️ 实测教训：OCI 慨「NSG ≠ iptables」。</strong>如果喺 Console 开咗安全清单但仍然连唔到，唔好净系喺 VM 入面查 iptables — 先确认 OCI 嗰层（Security List / NSG）有冇放行。两层系独立慨，<strong>任何一层挡住都系失败</strong>。仲有：443 好多时已经俾其他服务（例如 sing-box 代理）占用，开 port 前先<code>ss -tlnp</code>睇下边个喺度用紧。</div>
+<strong>⚠️ 实测教训：OCI 的「NSG ≠ iptables」。</strong>如果在 Console 开了安全清单但仍然连不上，不要只在 VM 里查 iptables — 先确认 OCI 那一层（Security List / NSG）有没放行。两层是独立的，<strong>任何一层挡住都是失败</strong>。还有：443 很多时候已经被其他服务（例如 sing-box 代理）占用，开 port 前先<code>ss -tlnp</code>看下边个在度用紧。</div>
 </div>
 11. 命令速查
 <div class="section" id="commands">
@@ -479,8 +494,8 @@ The user speaks Chinese. Never use English unless the user explicitly asks.</div
 <tr><td><code>hermes cron list / status</code></td><td>列出 / 查看排程任务</td></tr>
 <tr><td><code>sudo systemctl status hermes-gateway</code></td><td>查看服务状态</td></tr>
 <tr><td><code>sudo systemctl enable hermes-gateway</code></td><td>开机自动启动</td></tr>
-<tr><td><code>sudo journalctl -u hermes-gateway -f</code></td><td>即时睇服务日志</td></tr>
-<tr><td><code>tail -f ~/.hermes/logs/gateway.log</code></td><td>即时睇 Hermes 日志</td></tr>
+<tr><td><code>sudo journalctl -u hermes-gateway -f</code></td><td>实时看服务日志</td></tr>
+<tr><td><code>tail -f ~/.hermes/logs/gateway.log</code></td><td>实时看 Hermes 日志</td></tr>
 <tr><td><code>df -h / free -h</code></td><td>磁碟 / 记忆体使用</td></tr>
 </table>
 </div>
@@ -491,38 +506,38 @@ The user speaks Chinese. Never use English unless the user explicitly asks.</div
 <div style="display:flex;flex-direction:column;gap:10px">
 <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
 <p style="font-weight:600;margin-bottom:4px">Q：Bot 上 systemd 后报 409 Conflict？</p>
-<p style="font-size:13px;color:var(--dim)"><strong>原因：</strong>旧慨 polling 进程仲喺度同 Gateway 争同一个 Bot Token。<br/><strong>解决：</strong>起服务前先<code>pkill -f "hermes"</code>或直接<code>pkill -f polling</code>，再<code>systemctl start hermes-gateway</code>。</p>
+<p style="font-size:13px;color:var(--dim)"><strong>原因：</strong>旧的 polling 进程还在和 Gateway 争同一个 Bot Token。<br/><strong>解决：</strong>起服务前先<code>pkill -f "hermes"</code>或直接<code>pkill -f polling</code>，再<code>systemctl start hermes-gateway</code>。</p>
 </div>
 <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
-<p style="font-weight:600;margin-bottom:4px">Q：Gateway 启动咗但 Bot 完全冇反应？</p>
-<p style="font-size:13px;color:var(--dim)"><strong>原因：</strong>9 成系 systemd 冇读到环境变数。日志出现<code>No messaging platforms enabled</code>即系 Token 未载入。<br/><strong>解决：</strong>确认服务档慨<code>Environment=</code>五个变数全部填咗 →<code>daemon-reload</code>+<code>restart</code>→ 再睇日志。</p>
+<p style="font-weight:600;margin-bottom:4px">Q：Gateway 启动了但 Bot 完全没反应？</p>
+<p style="font-size:13px;color:var(--dim)"><strong>原因：</strong>9 成是 systemd 没读到环境变量。日志出现<code>No messaging platforms enabled</code>即是 Token 未载入。<br/><strong>解决：</strong>确认服务档的<code>Environment=</code>五个变数全部填了 →<code>daemon-reload</code>+<code>restart</code>→ 再看日志。</p>
 </div>
 <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
 <p style="font-weight:600;margin-bottom:4px">Q：DeepSeek API 报 401 Authentication Fails？</p>
-<p style="font-size:13px;color:var(--dim)"><strong>原因：</strong>用错 Key（Claude Code 嗰个）或者 Key 过期。<br/><strong>解决：</strong>用 curl 测 Key（见 §6）→ 去平台重建 → 更新服务档<code>DEEPSEEK_API_KEY</code>→<code>daemon-reload</code>+<code>restart</code>。</p>
+<p style="font-size:13px;color:var(--dim)"><strong>原因：</strong>用错 Key（Claude Code 那个）或者 Key 过期。<br/><strong>解决：</strong>用 curl 测 Key（见 §6）→ 去平台重建 → 更新服务档<code>DEEPSEEK_API_KEY</code>→<code>daemon-reload</code>+<code>restart</code>。</p>
 </div>
 <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
-<p style="font-weight:600;margin-bottom:4px">Q：SSH 连唔到／超时？</p>
-<p style="font-size:13px;color:var(--dim)"><strong>检查顺序：</strong>① OCI Security List 有冇开 22 → ② Public IP 啱唔啱 → ③ 金钥权限<code>chmod 400 ~/.ssh/id_rsa</code>→ ④ 用户名（Ubuntu 用<code>ubuntu</code>）。</p>
+<p style="font-weight:600;margin-bottom:4px">Q：SSH 连不上／超时？</p>
+<p style="font-size:13px;color:var(--dim)"><strong>检查顺序：</strong>① OCI Security List 有没有开 22 → ② Public IP 是否正确 → ③ 密钥权限<code>chmod 400 ~/.ssh/id_rsa</code>→ ④ 用户名（Ubuntu 用<code>ubuntu</code>）。</p>
 </div>
 <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
 <p style="font-weight:600;margin-bottom:4px">Q：记忆体不足（OOM）？</p>
-<p style="font-size:13px;color:var(--dim)">用 ARM 2 vCPU / 12GB 实例基本上唔会遇到。 x86 micro 先要加 Swap：<br/><code>sudo fallocate -l 4G /swapfile &amp;&amp; sudo chmod 600 /swapfile &amp;&amp; sudo mkswap /swapfile &amp;&amp; sudo swapon /swapfile</code><br/>再加入<code>/etc/fstab</code>永久生效。</p>
+<p style="font-size:13px;color:var(--dim)">用 ARM 2 vCPU / 12GB 实例基本上不会遇到。 x86 micro 才需要加 Swap：<br/><code>sudo fallocate -l 4G /swapfile &amp;&amp; sudo chmod 600 /swapfile &amp;&amp; sudo mkswap /swapfile &amp;&amp; sudo swapon /swapfile</code><br/>再加入<code>/etc/fstab</code>永久生效。</p>
 </div>
 <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
-<p style="font-weight:600;margin-bottom:4px">Q：Oracle 会唔会回收我部机？</p>
-<p style="font-size:13px;color:var(--dim)">Oracle 会回收长期低活动慨免费实例。 Gateway 24/7 运行本身就系持续活动；想更稳阵可以加 keepalive：<br/><code>crontab -e</code>→ 加入<code>*/30 * * * * echo "keepalive $(date)" &gt;&gt; ~/keepalive.log</code></p>
+<p style="font-weight:600;margin-bottom:4px">Q：Oracle 会不会回收我的机器？</p>
+<p style="font-size:13px;color:var(--dim)">Oracle 会回收长期低活动的免费实例。 Gateway 24/7 运行本身就系持续活动；想更稳阵可以加 keepalive：<br/><code>crontab -e</code>→ 加入<code>*/30 * * * * echo "keepalive $(date)" &gt;&gt; ~/keepalive.log</code></p>
 </div>
 <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
 <p style="font-weight:600;margin-bottom:4px">Q：更新完要重启吗？</p>
-<p style="font-size:13px;color:var(--dim)"><code>apt upgrade</code>更新咗 kernel 之后要<code>sudo reboot</code>先生效；<code>hermes git pull --rebase</code>更新源码之后要<code>sudo systemctl restart hermes-gateway</code>。</p>
+<p style="font-size:13px;color:var(--dim)"><code>apt upgrade</code>更新了 kernel 之后要<code>sudo reboot</code>才生效；<code>hermes git pull --rebase</code>更新源码之后要<code>sudo systemctl restart hermes-gateway</code>。</p>
 </div>
 </div>
 </div>
 13. WebUI
 <div class="section" id="webui">
 <h2 class="section-title"><span class="num">13</span>进阶：Hermes WebUI（可选）</h2>
-<p class="section-desc">想用浏览器介面同 Agent 互动、唔使 SSH？装 WebUI 就得。</p>
+<p class="section-desc">想用浏览器界面和 Agent 互动、无需 SSH？装 WebUI 就得。</p>
 <div class="step-list" style="counter-reset:step 0">
 <div class="step-item">
 <h3>克隆 + 设密码</h3>
@@ -583,14 +598,14 @@ sudo certbot --nginx -d ai.yourdomain.com</div>
 14. 备份
 <div class="section" id="backup">
 <h2 class="section-title"><span class="num">14</span>备份与维护建议</h2>
-<h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎14.1 定期备份（最重要慨档案）</h3>
+<h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎14.1 定期备份（最重要的档案）</h3>
 <div class="cmd">tar -czvf hermes-backup-$(date +%Y%m%d).tar.gz \
   ~/.hermes/config.yaml ~/.hermes/.env ~/.hermes/SOUL.md \
   ~/.hermes/logs/ /etc/systemd/system/hermes-gateway.service
 
 # 拉返落本地
-scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
-<p style="font-size:13px;color:var(--dim)"><code>config.yaml</code>（设定）、<code>.env</code>（密钥）、<code>SOUL.md</code>（长期记忆）、systemd 服务档 — 呢四样加埋就系成部机慨「灵魂」，冇咗渠哋等于由头嚟过。</p>
+scp ubuntu@&lt;你的Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
+<p style="font-size:13px;color:var(--dim)"><code>config.yaml</code>（设定）、<code>.env</code>（密钥）、<code>SOUL.md</code>（长期记忆）、systemd 服务档 — 这四样加起来就是整台机器的「灵魂」，没有它们等于从头再来。</p>
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎14.2 维护节奏</h3>
 <div class="table-wrap">
 <table>
@@ -603,7 +618,7 @@ scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎14.3 安全建议</h3>
 <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
 <li>定期更新系统套件；kernel 更新后<code>sudo reboot</code></li>
-<li>唔好用 root 行 Hermes（用 ubuntu 用户）</li>
+<li>不要用 root 运行 Hermes（用 ubuntu 用户）</li>
 <li>限制<code>TELEGRAM_ALLOWED_USERS</code>，防未授权使用</li>
 <li>装 fail2ban 防暴力破解：<code>sudo apt install fail2ban -y</code></li>
 <li>定期检查 API 用量，避免意外超支</li>
@@ -664,13 +679,13 @@ scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
 
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.1 安装 OCI CLI + API Key</h3>
 <div class="cmd">bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)"
-~/bin/oci setup config   # 交互式：Tenancy OCID / User OCID / Region / 生成 keypair</div>
+~/bin/oci setup config  # 交互式：Tenancy OCID / User OCID / Region / 生成 keypair</div>
 <p style="font-size:13px;color:var(--dim)">然后到 Console 右上头像 → <b>My profile → API keys → Add API key</b> → 粘贴 <code>~/.oci/oci_api_key_public.pem</code> 的内容。顺手记下 <b>Tenancy OCID</b>（就是下面 <code>--tenant-id</code> 要的值）。之后所有查询直接读 <code>~/.oci/config</code>，不用再登录。</p>
 <div class="tip red" style="margin-top:8px"><b>文档 vs 现实：</b>这个 CLI 版本里 <code>oci limits</code> / <code>oci iam limit*</code> <b>不存在</b>，免费额度不能靠 quota API 查 —— 要用下面的 Usage API 反推。</div>
 
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎16.2 两条关键命令（实测，官网文档不全）</h3>
-<div class="cmd">TENANCY=ocid1.tenancy.oc1..xxxx          # 你的 Tenancy OCID
-S=$(date -d "$(date +%Y-%m-01)" +%Y-%m-%d)   # 本月 1 号
+<div class="cmd">TENANCY=ocid1.tenancy.oc1..xxxx  # 你的 Tenancy OCID
+S=$(date -d "$(date +%Y-%m-01)" +%Y-%m-%d)  # 本月 1 号
 E=$(date -d tomorrow +%Y-%m-%d)
 
 # ① 费用（本月 / 昨日）
@@ -708,7 +723,7 @@ E=$(date -d tomorrow +%Y-%m-%d)
 nano /home/ubuntu/oci-billing/oci_billing_report.py
 
 # 2) Hermes cron 只认 ~/.hermes/scripts/ 下的文件，所以要一个 thin wrapper
-echo '#!/bin/bash' > ~/.hermes/scripts/oci_billing_report.sh
+echo '#!/bin/bash' &gt; ~/.hermes/scripts/oci_billing_report.sh
 echo 'exec python3 /home/ubuntu/oci-billing/oci_billing_report.py' &gt;&gt; ~/.hermes/scripts/oci_billing_report.sh
 chmod +x ~/.hermes/scripts/oci_billing_report.sh
 
@@ -751,12 +766,12 @@ AMD 小实例: 还可开 2 台 (E2.1.Micro · 1/8 核 / 1GB)
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.5 免费上限写在哪里（设置一次）</h3>
 <p style="font-size:13px;color:var(--dim)">上限是<b>官方固定值</b>（只做分母），写在脚本顶部常量即可；用量本身永远是 API 实时数字：</p>
 <div class="cmd">LIMITS = {
-    "arm_ocpu": 3000.0,    # OCPU·时/月（Always Free 账户请改 1500）
-    "arm_mem":  18000.0,   # GB·时/月（Always Free 账户请改 9000）
-    "egress":   10240.0,   # GB/月（10TB，两种账户一样）
-    "block":    200.0,     # GB 总量（两种账户一样）
+    "arm_ocpu": 3000.0,  # OCPU·时/月（Always Free 账户请改 1500）
+    "arm_mem":  18000.0,  # GB·时/月（Always Free 账户请改 9000）
+    "egress":   10240.0,  # GB/月（10TB，两种账户一样）
+    "block":    200.0,  # GB 总量（两种账户一样）
 }
-WARN_PCT = 90.0            # 月底预测达 90% → 出警告</div>
+WARN_PCT = 90.0  # 月底预测达 90% → 出警告</div>
 <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
   <li><b>Always Free</b> tenancy：A1 额度 1,500 OCPU·时 + 9,000 GB·时/月（2026-06-15 起）</li>
   <li><b>PAYG</b>：官方 2026-08-03 书面确认<b>不受减半影响</b> → 3,000 + 18,000（见 §15）</li>
@@ -815,12 +830,13 @@ WARN_PCT = 90.0            # 月底预测达 90% → 出警告</div>
 <div class="link-row"><span class="label">Hermes 指南</span><a href="https://forumdata-collab.github.io/hermes-mp3-guide/">Hermes Agent 音乐下载指南</a></div>
 <div class="link-row"><span class="label">CF 指南</span><a href="https://forumdata-collab.github.io/hermes-cf-guide/">Hermes Agent × Cloudflare AI 补充指南</a></div>
 <div class="link-row"><span class="label">科学上网</span><a href="https://forumdata-collab.github.io/hermes-gfw-guide/">Oracle VM + Cloudflare 双通道科学上网实战</a></div>
+<div class="link-row"><span class="label">夸克网盘 × Google Drive 同步 101</span><a href="https://forumdata-collab.github.io/quark-gdrive-sync-guide/" target="_blank">quark-gdrive-sync-guide ↗</a></div>
 </div>
 <div class="footer">
 <a href="https://github.com/forumdata-collab" target="_blank">GitHub</a>·  全部亲测 · 所有坑已替你踩过
      ·  Nous Research</div>
 </div>
-<div style="text-align:center;padding:28px 20px 40px;margin-top:40px;border-top:1px solid var(--border,rgba(255,255,255,.08));background:var(--card,#171e2e);color:var(--dim,#93a0bd);font-size:13px"><p style="margin:0 0 14px">鍾意呢份指南？請我飲杯咖啡 ☕</p><a href="https://ko-fi.com/forumdata" target="_blank" style="display:inline-flex;align-items:center;gap:10px;padding:12px 28px;background:#ff5e5b;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.47.06 8.529-1.723 8.649-4.916zm-11.638 8.978c-2.252 0-4.078-1.826-4.078-4.078s1.826-4.078 4.078-4.078 4.078 1.826 4.078 4.078-4.078 4.078z"/></svg>☕ 請我喝杯咖啡</a></div>
+<div style="text-align:center;padding:28px 20px 40px;margin-top:40px;border-top:1px solid var(--border,rgba(255,255,255,.08));background:var(--card,#171e2e);color:var(--dim,#93a0bd);font-size:13px"><p style="margin:0 0 14px">喜欢这份指南？请我喝杯咖啡 ☕</p><a href="https://ko-fi.com/forumdata" target="_blank" style="display:inline-flex;align-items:center;gap:10px;padding:12px 28px;background:#ff5e5b;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.47.06 8.529-1.723 8.649-4.916zm-11.638 8.978c-2.252 0-4.078-1.826-4.078-4.078s1.826-4.078 4.078-4.078 4.078 1.826 4.078 4.078-4.078 4.078z"/></svg>☕ 请我喝杯咖啡</a></div>
 <button id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;right:22px;bottom:22px;width:46px;height:46px;border-radius:50%;border:none;background:var(--accent,#6c8cff);color:#fff;font-size:20px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.35);z-index:99;display:none" aria-label="返回顶部">↑</button>
 <script>(function(){var b=document.getElementById('topBtn');window.addEventListener('scroll',function(){b.style.display=window.scrollY>600?'block':'none'});})();</script>
 </body>

@@ -5,6 +5,21 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="كيفية نشر وكيل Hermes على Oracle VM مجانًا - الدليل العملي لـ OCI Free Tier ARM · 2 وحدات معالجة مركزية افتراضية / 12 جيجابايت مجانًا بشكل دائم (منذ 2026-06-15) · نظام يعمل على مدار 24 ساعة طوال أيام الأسبوع · جميع المزالق للاختبار الشخصي" name="description"/>
 <title>كيفية نشر وكيل Hermes على Oracle VM مجانًا · Nous Research</title>
+<link rel="canonical" href="https://forumdata-collab.github.io/hermes-oracle-guide/ar/">
+<link rel="alternate" hreflang="zh-Hant" href="https://forumdata-collab.github.io/hermes-oracle-guide/">
+<link rel="alternate" hreflang="en" href="https://forumdata-collab.github.io/hermes-oracle-guide/en/">
+<link rel="alternate" hreflang="zh-CN" href="https://forumdata-collab.github.io/hermes-oracle-guide/zh-CN/">
+<link rel="alternate" hreflang="ar" href="https://forumdata-collab.github.io/hermes-oracle-guide/ar/">
+<link rel="alternate" hreflang="x-default" href="https://forumdata-collab.github.io/hermes-oracle-guide/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Nous Research Hermes Agent Guide">
+<meta property="og:url" content="https://forumdata-collab.github.io/hermes-oracle-guide/ar/">
+<meta property="og:title" content="كيفية نشر وكيل Hermes على Oracle VM مجانًا · Nous Research">
+<meta property="og:description" content="كيفية نشر وكيل Hermes على Oracle VM مجانًا - الدليل العملي لـ OCI Free Tier ARM · 2 وحدات معالجة مركزية افتراضية / 12 جيجابايت مجانًا بشكل دائم (منذ 2026-06-15) · نظام يعمل على مدار 24 ساعة طوال أيام الأسبوع · جميع المزالق للاختبار الشخصي">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="zh_TW">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="zh_CN">
 <style>
 :root{--bg1:#0f0c29;--bg2:#302b63;--bg3:#24243e;--card:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.08);--text:#e8e8e8;--dim:rgba(255,255,255,0.45);--accent:#6c8cff;--green:#4ade80;--orange:#fb923c;--red:#f87171;--purple:#a78bfa;--teal:#2dd4bf;--cyan:#22d3ee;--teal-dim:rgba(45,212,191,0.12);--cyan-dim:rgba(34,211,238,0.12)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -99,6 +114,10 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
   .arch-flow{gap:6px}
   .arch-flow span{padding:4px 8px;font-size:11px}
 }
+
+/* RTL 修正：命令、代碼、檔名一律 LTR，否則阿拉伯文排版會打亂 shell 指令 */
+.cmd, pre { direction: ltr; text-align: left; unicode-bidi: isolate; }
+code, kbd, samp { unicode-bidi: plaintext; }
 </style>
 </head>
 <body>
@@ -162,7 +181,7 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 <div class="step-list" style="counter-reset:step 0">
 <div class="step-item">
 <h3>انتقل إلى صفحة التسجيل</h3>
-<div class="cmd">https://signup.cloud.Oracle.com/</div>
+<div class="cmd">https://signup.cloud.oracle.com/</div>
 <p>املأ اسمك وبريدك الإلكتروني والبلد/المنطقة.</p>
 </div>
 <div class="step-item">
@@ -225,12 +244,12 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 <div class="step-list" style="counter-reset:step 0">
 <div class="step-item">
 <h3>اتصال SSH</h3>
-<div class="cmd">ssh -i ~/.ssh/id_rsa ubuntu@&lt;your IP العام&gt;</div>
+<div class="cmd">ssh -i ~/.ssh/id_rsa ubuntu@&lt;your public IP&gt;</div>
 <p>نظام المستخدم الافتراضي لأوبونتو<code>ubuntu</code>؛ أوراكل لينكس أولاً<code>opc</code>.</p>
 </div>
 <div class="step-item">
 <h3>تحديث النظام</h3>
-<div class="cmd">Sudo apt update &amp;&amp; sudo apt ترقية -y</div>
+<div class="cmd">sudo apt update &amp;&amp; sudo apt upgrade -y</div>
 </div>
 <div class="step-item">
 <h3>تثبيت الأدوات الأساسية + تحديد المنطقة الزمنية</h3>
@@ -239,12 +258,12 @@ sudo timedatectl set-timezone Asia/Hong_Kong</div>
 </div>
 <div class="step-item">
 <h3>قم بتشغيل جدار الحماية UFW (الطبقة الأولى)</h3>
-<div class="cmd">Sudo ufw الافتراضي ينكر الوارد
-Sudo ufw الافتراضي يسمح بالخروج
-سودو ufw يسمح بـ ssh
-سودو ufw يسمح بـ 80/tcp
-سودو ufw يسمح بـ 443/tcp
-تمكين سودو ufw</div>
+<div class="cmd">sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw enable</div>
 <p>⚠️ تذكر:<strong>أوراكل لديها طبقتين من جدار الحماية</strong>— بالإضافة إلى UFW/iptables داخل الجهاز الظاهري، توجد أيضًا قائمة الأمان الخاصة بـ OCI VCN (تمت مناقشتها في القسم 10). يجب فتح كلا الطابقين أولاً.</p>
 </div>
 </div>
@@ -255,20 +274,20 @@ Sudo ufw الافتراضي يسمح بالخروج
 <div class="step-list" style="counter-reset:step 0">
 <div class="step-item">
 <h3>التثبيت بنقرة واحدة</h3>
-<div class="cmd">حليقة -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | سحق</div>
+<div class="cmd">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash</div>
 <p>الإكمال التلقائي: تثبيت uv → إنشاء Python 3.11 venv → تثبيت أكثر من 100 تبعية → تثبيت Node.js → تثبيت cua-driver.</p>
 </div>
 <div class="step-item">
 <h3>إعادة تحميل + التحقق</h3>
-<div class="cmd">المصدر ~/.bashrc
-هيرميس--النسخة</div>
+<div class="cmd">source ~/.bashrc
+hermes --version</div>
 <p>إلى رقم الإصدار (على سبيل المثال<code>hermes 0.14.0</code>) يعني النجاح. مسار التثبيت هو<code>~/.local/bin/hermes</code>، المنصوص عليها<code>~/.hermes/</code>.</p>
 </div>
 </div>
 <div class="tip red" style="margin-top:12px">
-<strong>⚠️ حفرة الاختبار الفعلي لـ ARM: فشل تنزيل HTTP/2.</strong>قد يتم الإبلاغ عن البرنامج النصي للتثبيت عند تنزيل Node.js<code>curl: (92) HTTP/2 stream error</code>. حل:<code>Ctrl+C</code>الإنهاء → تنزيل Node.js يدويًا لـ ARM باستخدام HTTP/1.1:<div class="cmd" style="margin-top:6px">حليقة --http1.1 -L "https://nodejs.org/dist/v22.11.0/node-v22.11.0-linux-arm64.tar.gz" -o /tmp/node.tar.gz
+<strong>⚠️ حفرة الاختبار الفعلي لـ ARM: فشل تنزيل HTTP/2.</strong>قد يتم الإبلاغ عن البرنامج النصي للتثبيت عند تنزيل Node.js<code>curl: (92) HTTP/2 stream error</code>. حل:<code>Ctrl+C</code>الإنهاء → تنزيل Node.js يدويًا لـ ARM باستخدام HTTP/1.1:<div class="cmd" style="margin-top:6px">curl --http1.1 -L "https://nodejs.org/dist/v22.11.0/node-v22.11.0-linux-arm64.tar.gz" -o /tmp/node.tar.gz
 mkdir -p ~/.hermes/node
-القطران -xzf /tmp/node.tar.gz -C ~/.hermes/node --strip-components=1
+tar -xzf /tmp/node.tar.gz -C ~/.hermes/node --strip-components=1
 rm /tmp/node.tar.gz</div>إذا قمت بإعادة تنفيذ البرنامج النصي للتثبيت، فسيتم تخطي Node.js الذي تم تنزيله.</div>
 </div>
 5. الإعداد
@@ -277,7 +296,7 @@ rm /tmp/node.tar.gz</div>إذا قمت بإعادة تنفيذ البرنامج 
 <div class="step-list" style="counter-reset:step 0">
 <div class="step-item">
 <h3>بدء المعالج</h3>
-<div class="cmd">إعداد هيرميس</div>
+<div class="cmd">hermes setup</div>
 </div>
 <div class="step-item">
 <h3>الخيارات في لمحة</h3>
@@ -304,26 +323,26 @@ rm /tmp/node.tar.gz</div>إذا قمت بإعادة تنفيذ البرنامج 
 </div>
 <div class="step-item">
 <h3>قم بتأكيد ملف config.yaml</h3>
-<div class="cmd">نانو ~/.hermes/config.yaml</div>
-<div class="cmd">المزود: Deepseek
-الموديل: Deepseek-v4-pro
+<div class="cmd">nano ~/.hermes/config.yaml</div>
+<div class="cmd">provider: deepseek
+model: deepseek-v4-pro
 base_url: https://api.deepseek.com/v1</div>
 </div>
 <div class="step-item">
 <h3>اكتب إلى .env</h3>
-<div class="cmd">DEEPSEEK_API_KEY=sk - مفتاح البحث العميق الخاص بك</div>
+<div class="cmd">DEEPSEEK_API_KEY=sk-your-deepseek-key</div>
 </div>
 <div class="step-item">
 <h3>التحقق من الاتصال</h3>
-<div class="cmd">دردشة هيرميس</div>
+<div class="cmd">hermes chat</div>
 <p>أدخل "مرحبًا" واستقبل الرد بنجاح.<code>Ctrl+C</code>يترك.</p>
 </div>
 </div>
 <div class="tip red" style="margin-top:12px">
-<strong>⚠️ المأزق: هناك نوعان من مفتاح DeepSeek!</strong>قد يكون الأشخاص الذين استخدموا Claude Code + DeepSeek مخطئين - أحدهما يستخدم بواسطة Claude Code<code>ANTHROPIC_AUTH_TOKEN</code>، أحدهما هو المفتاح الأصلي لمنصة DeepSeek،<strong>كلاهما لهما نفس التنسيق ولكن بقيم مختلفة</strong>. استخدم المفتاح الأصلي للمنصة؛ الإبلاغ 401 يعني خطأ رئيسي. اختبار سريع:<div class="cmd" style="margin-top:6px">حليقة https://api.deepseek.com/v1/chat/completions \
-  -H "التفويض: حامل المفتاح هو مفتاحك" \
-  -H "نوع المحتوى: application/json" \
-  -d '{"model": "deepseek-v4-pro"، "الرسائل": [{"role": "user"، "content": "hi"}]}'</div>200 = صالح، 401 = غير صالح.</div>
+<strong>⚠️ المأزق: هناك نوعان من مفتاح DeepSeek!</strong>قد يكون الأشخاص الذين استخدموا Claude Code + DeepSeek مخطئين - أحدهما يستخدم بواسطة Claude Code<code>ANTHROPIC_AUTH_TOKEN</code>، أحدهما هو المفتاح الأصلي لمنصة DeepSeek،<strong>كلاهما لهما نفس التنسيق ولكن بقيم مختلفة</strong>. استخدم المفتاح الأصلي للمنصة؛ الإبلاغ 401 يعني خطأ رئيسي. اختبار سريع:<div class="cmd" style="margin-top:6px">curl https://api.deepseek.com/v1/chat/completions \
+  -H "Authorization: Bearer sk-你的key" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"deepseek-v4-pro","messages":[{"role":"user","content":"hi"}]}'</div>200 = صالح، 401 = غير صالح.</div>
 </div>
 7. نظام البوابة د
 <div class="section" id="gateway">
@@ -332,55 +351,55 @@ base_url: https://api.deepseek.com/v1</div>
 <div class="step-list" style="counter-reset:step 0">
 <div class="step-item">
 <h3>تثبيت البوابة</h3>
-<div class="cmd">تثبيت بوابة هيرميس</div>
+<div class="cmd">hermes gateway install</div>
 </div>
 <div class="step-item">
 <h3>إنشاء ملف خدمة systemd يدويًا<span class="badge need">الخطوات الأساسية</span></h3>
 <p>⚠️<strong>المأزق الأكبر هو أن systemd لا يستطيع قراءة ملفات .env!</strong>يجب كتابة متغيرات البيئة مباشرة في ملف الخدمة، وإلا ستكون جلسة الروبوت "لم يتم تمكين منصات المراسلة".</p>
-<div class="cmd">سودو نانو /etc/systemd/system/hermes-gateway.service</div>
-<div class="cmd">[الوحدة]
-الوصف=خدمة بوابة هيرميس
-بعد=network.target
+<div class="cmd">sudo nano /etc/systemd/system/hermes-gateway.service</div>
+<div class="cmd">[Unit]
+Description=Hermes Gateway Service
+After=network.target
 
-[الخدمة]
-النوع=بسيط
-المستخدم = أوبونتو
-دليل العمل=/home/ubuntu
-ExecStart=/home/ubuntu/.local/bin/hermes البوابة
-إعادة التشغيل = دائمًا
-إعادة التشغيل = 10
-البيئة=PATH=/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu
+ExecStart=/home/ubuntu/.local/bin/hermes gateway
+Restart=always
+RestartSec=10
+Environment=PATH=/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
 
 # المفتاح: systemd لا يقرأ .env، ويجب كتابة متغيرات البيئة هناك مباشرة!
-البيئة=DEEPSEEK_API_KEY=sk-مفتاح البحث العميق الخاص بك
-البيئة=TELEGRAM_BOT_TOKEN=رمز الروبوت الخاص بك
-البيئة=TELEGRAM_ALLOWED_USERS=معرف Telegram الرقمي الخاص بك
-البيئة=TELEGRAM_HOME_CHANNEL=معرف Telegram الرقمي الخاص بك
-البيئة=GATEWAY_ALLOW_ALL_USERS=صحيح
+Environment=DEEPSEEK_API_KEY=sk-your-deepseek-key
+Environment=TELEGRAM_BOT_TOKEN=你的Bot Token
+Environment=TELEGRAM_ALLOWED_USERS=你的Telegram數字ID
+Environment=TELEGRAM_HOME_CHANNEL=你的Telegram數字ID
+Environment=GATEWAY_ALLOW_ALL_USERS=true
 
-[تثبيت]
+[Install]
 WantedBy=multi-user.target</div>
 <p>النقاط الرئيسية للتعديل:<code>User</code>/<code>WorkingDirectory</code>/<code>ExecStart</code>التغيير وفقًا للمسار الفعلي؛ خمسة<code>Environment=</code>يجب ملء كل شيء بالقيم الحقيقية.</p>
 </div>
 <div class="step-item">
 <h3>ابدأ + ابدأ عند التمهيد</h3>
 <div class="cmd">sudo systemctl daemon-reload
-يقوم sudo systemctl بتمكين بوابة هيرميس
-Sudo systemctl ابدأ بوابة هيرميس</div>
+sudo systemctl enable hermes-gateway
+sudo systemctl start hermes-gateway</div>
 </div>
 <div class="step-item">
 <h3>التحقق + قراءة السجلات</h3>
-<div class="cmd">سودو systemctl حالة بوابة هيرميس
-Sudo Journalctl -u Hermes-gateway -f</div>
+<div class="cmd">sudo systemctl status hermes-gateway
+sudo journalctl -u hermes-gateway -f</div>
 <p>عرض الحالة<code>active (running)</code>، يرى السجل<code>✓ telegram connected</code>هذا هو النجاح.</p>
 </div>
 <div class="step-item">
 <h3>إعداد دوران السجل (لمنع انفجار القرص)</h3>
-<div class="cmd">سودو نانو /etc/systemd/journald.conf</div>
+<div class="cmd">sudo nano /etc/systemd/journald.conf</div>
 <div class="cmd">SystemMaxUse=200M
 SystemKeepFree=500M
 RuntimeMaxUse=100M</div>
-<div class="cmd">سودو systemctl إعادة تشغيل systemd-journald</div>
+<div class="cmd">sudo systemctl restart systemd-journald</div>
 </div>
 </div>
 <div class="tip green" style="margin-top:12px">
@@ -400,13 +419,13 @@ RuntimeMaxUse=100M</div>
 </div>
 <div class="step-item">
 <h3>تحديث ملفات خدمة systemd</h3>
-<div class="cmd">سودو نانو /etc/systemd/system/hermes-gateway.service</div>
-<div class="cmd">البيئة=TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghiJKL
-البيئة=TELEGRAM_ALLOWED_USERS=123456789
-البيئة=TELEGRAM_HOME_CHANNEL=123456789
-البيئة=GATEWAY_ALLOW_ALL_USERS=صحيح</div>
+<div class="cmd">sudo nano /etc/systemd/system/hermes-gateway.service</div>
+<div class="cmd">Environment=TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghiJKL
+Environment=TELEGRAM_ALLOWED_USERS=123456789
+Environment=TELEGRAM_HOME_CHANNEL=123456789
+Environment=GATEWAY_ALLOW_ALL_USERS=true</div>
 <div class="cmd">sudo systemctl daemon-reload
-سودو systemctl إعادة تشغيل بوابة هيرميس</div>
+sudo systemctl restart hermes-gateway</div>
 </div>
 <div class="step-item">
 <h3>يؤكد</h3>
@@ -423,10 +442,10 @@ RuntimeMaxUse=100M</div>
 <div class="step-item">
 <h3>تحرير SOUL.md</h3>
 <div class="cmd">cp ~/.hermes/SOUL.md ~/.hermes/SOUL.md.backup
-نانو ~/.hermes/SOUL.md</div>
+nano ~/.hermes/SOUL.md</div>
 <p>أضف قواعد اللغة في الأعلى:</p>
 <div class="cmd">قاعدة اللغة الحرجة: يجب عليك الرد باللغة الصينية (繁体中文) في جميع الأوقات.
-المستخدم يتحدث الصينية. لا تستخدم اللغة الإنجليزية أبدًا ما لم يطلب المستخدم ذلك صراحةً.</div>
+The user speaks Chinese. Never use English unless the user explicitly asks.</div>
 </div>
 <div class="step-item">
 <h3>(اختياري) أدخل المعرفة بالمشروع</h3>
@@ -434,7 +453,7 @@ RuntimeMaxUse=100M</div>
 </div>
 <div class="step-item">
 <h3>إعادة التشغيل تصبح نافذة المفعول</h3>
-<div class="cmd">سودو systemctl إعادة تشغيل بوابة هيرميس</div>
+<div class="cmd">sudo systemctl restart hermes-gateway</div>
 <p>بعد تغيير SOUL.md، يجب عليك إعادة تشغيل البوابة حتى تدخل حيز التنفيذ.</p>
 </div>
 </div>
@@ -460,7 +479,7 @@ RuntimeMaxUse=100M</div>
 </div>
 </div>
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎10.2 جدار الحماية المثيل (طبقة النظام)</h3>
-<div class="cmd">حالة سودو ufw مطول</div>
+<div class="cmd">sudo ufw status verbose</div>
 <p style="font-size:13px;color:var(--dim)">يجب أن نرى<code>22 / 80 / 443 ALLOW IN</code>. قد يحتاج مستخدمو Oracle Linux إلى تغيير iptables مباشرةً إذا لم يستجب UFW.</p>
 <div class="tip red" style="margin-top:12px">
 <strong>⚠️ دروس من الاختبار الفعلي: "NSG ≠ iptables" من OCI.</strong>إذا قمت بفتح قائمة الأمان في وحدة التحكم ولكنك لا تزال غير قادر على الاتصال، فمن الأفضل التحقق من iptables في VM - تأكد أولاً مما إذا كانت طبقة OCI (قائمة الأمان / NSG) مسموحة أم لا. الطابقين مستقلين.<strong>أي طبقة تمنعها سوف تفشل.</strong>. Zhong You: في كثير من الأحيان تم احتلال 443 بواسطة خدمات أخرى (مثل وكيل صندوق الغناء). قبل فتح المنفذ<code>ss -tlnp</code>نلقي نظرة على الموقع أدناه.</div>
@@ -526,56 +545,56 @@ RuntimeMaxUse=100M</div>
 <div class="step-list" style="counter-reset:step 0">
 <div class="step-item">
 <h3>استنساخ + تعيين كلمة المرور</h3>
-<div class="cmd">مؤتمر نزع السلاح ~
-استنساخ بوابة https://github.com/nesquena/hermes-webui.git Hermes-webui
-مؤتمر نزع السلاح هيرميس-webui
+<div class="cmd">cd ~
+git clone https://github.com/nesquena/hermes-webui.git hermes-webui
+cd hermes-webui
 echo "HERMES_WEBUI_PASSWORD=تعيين كلمة مرور قوية" &gt; .env</div>
 </div>
 <div class="step-item">
 <h3>بناء خدمة systemd</h3>
-<div class="cmd">سودو نانو /etc/systemd/system/hermes-webui.service</div>
-<div class="cmd">[الوحدة]
-الوصف=Hermes WebUI
-بعد=network.target
+<div class="cmd">sudo nano /etc/systemd/system/hermes-webui.service</div>
+<div class="cmd">[Unit]
+Description=Hermes WebUI
+After=network.target
 
-[الخدمة]
-النوع=بسيط
-المستخدم = أوبونتو
+[Service]
+Type=simple
+User=ubuntu
 WorkingDirectory=/home/ubuntu/hermes-webui
 ExecStart=/home/ubuntu/hermes-webui/start.sh
-إعادة التشغيل = دائمًا
-إعادة التشغيل = 5
+Restart=always
+RestartSec=5
 
-[تثبيت]
+[Install]
 WantedBy=multi-user.target</div>
 </div>
 <div class="step-item">
 <h3>إطلاق + الوصول</h3>
 <div class="cmd">sudo systemctl daemon-reload
-Sudo systemctl يمكّن Hermes-webui
-Sudo systemctl ابدأ Hermes-webui</div>
+sudo systemctl enable hermes-webui
+sudo systemctl start hermes-webui</div>
 <p>افتح المتصفح<code>http://&lt;Public IP&gt;:8787</code>، قم بتسجيل الدخول باستخدام كلمة المرور .env. تذكر قائمة أمان OCI لتمرير 8787.</p>
 </div>
 <div class="step-item">
 <h3>(اختياري) إنشاء Nginx العكسي + HTTPS</h3>
-<div class="cmd">Sudo apt تثبيت nginx certbot python3-certbot-nginx -y
-Sudo nano /etc/nginx/sites-available/hermes-webui</div>
-<div class="cmd">الخادم {
-    استمع 80؛
-    اسم الخادم ai.yourdomain.com;
-    Client_max_body_size 500M؛
-    الموقع/{
+<div class="cmd">sudo apt install nginx certbot python3-certbot-nginx -y
+sudo nano /etc/nginx/sites-available/hermes-webui</div>
+<div class="cmd">server {
+    listen 80;
+    server_name ai.yourdomain.com;
+    client_max_body_size 500M;
+    location / {
         proxy_pass http://127.0.0.1:8787;
         proxy_http_version 1.1;
-        proxy_set_header المضيف $host;
+        proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        ترقية proxy_set_header $http_upgrade;
-        اتصال proxy_set_header "ترقية"؛
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
     }
 }</div>
-<div class="cmd">Sudo ln -s /etc/nginx/sites-available/hermes-webui /etc/nginx/sites-enabled/
-sudo nginx -t &amp;&amp; sudo systemctl إعادة تشغيل nginx
+<div class="cmd">sudo ln -s /etc/nginx/sites-available/hermes-webui /etc/nginx/sites-enabled/
+sudo nginx -t &amp;&amp; sudo systemctl restart nginx
 sudo certbot --nginx -d ai.yourdomain.com</div>
 </div>
 </div>
@@ -584,12 +603,12 @@ sudo certbot --nginx -d ai.yourdomain.com</div>
 <div class="section" id="backup">
 <h2 class="section-title"><span class="num">14</span>توصيات النسخ الاحتياطي والصيانة</h2>
 <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎14.1 النسخ الاحتياطي المنتظم (أهم الملفات)</h3>
-<div class="cmd">القطران -czvf هيرميس-النسخ الاحتياطي-$(التاريخ +%Y%m%d).tar.gz \
+<div class="cmd">tar -czvf hermes-backup-$(date +%Y%m%d).tar.gz \
   ~/.hermes/config.yaml ~/.hermes/.env ~/.hermes/SOUL.md \
   ~/.hermes/logs/ /etc/systemd/system/hermes-gateway.service
 
 # التراجع إلى المحلية
-scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
+scp ubuntu@&lt;your public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
 <p style="font-size:13px;color:var(--dim)"><code>config.yaml</code>(يثبت)،<code>.env</code>(مفتاح)،<code>SOUL.md</code>(الذاكرة طويلة المدى)، ملفات خدمة systemd - هذه الإضافات الأربعة هي "روح" الجهاز، بدونها تكون مثل البدء من الصفر.</p>
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎14.2 إيقاع الصيانة</h3>
 <div class="table-wrap">
@@ -664,13 +683,13 @@ scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
 
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.1 تثبيت OCI CLI ومفتاح API</h3>
 <div class="cmd">bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)"
-~/bin/oci setup config   # تفاعلي: Tenancy OCID / User OCID / Region / توليد المفاتيح</div>
+~/bin/oci setup config  # تفاعلي: Tenancy OCID / User OCID / Region / توليد المفاتيح</div>
 <p style="font-size:13px;color:var(--dim)">ثم من الـ Console: الصورة الرمزية (أعلى اليمين) → <b>My profile → API keys → Add API key</b> → الصق محتوى <code>~/.oci/oci_api_key_public.pem</code>. وسجّل <b>Tenancy OCID</b> — فهو قيمة <code>--tenant-id</code> أدناه. بعد ذلك تقرأ كل الاستعلامات <code>~/.oci/config</code> مباشرة دون تسجيل دخول.</p>
 <div class="tip red" style="margin-top:8px"><b>الوثائق مقابل الواقع:</b> في هذه النسخة من الـ CLI لا وجود لـ <code>oci limits</code> / <code>oci iam limit*</code>، لذا لا يمكن قراءة الحد المجاني من quota API — استخرجها من Usage API أدناه.</div>
 
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎16.2 الأمران الأساسيان (مُختبران؛ الوثائق ناقصة)</h3>
-<div class="cmd">TENANCY=ocid1.tenancy.oc1..xxxx          # معرّف Tenancy الخاص بك
-S=$(date -d "$(date +%Y-%m-01)" +%Y-%m-%d)   # أول يوم من الشهر
+<div class="cmd">TENANCY=ocid1.tenancy.oc1..xxxx  # معرّف Tenancy الخاص بك
+S=$(date -d "$(date +%Y-%m-01)" +%Y-%m-%d)  # أول يوم من الشهر
 E=$(date -d tomorrow +%Y-%m-%d)
 
 # (1) التكلفة (منذ بداية الشهر / الأمس)
@@ -708,7 +727,7 @@ E=$(date -d tomorrow +%Y-%m-%d)
 nano /home/ubuntu/oci-billing/oci_billing_report.py
 
 # 2) يقبل Hermes cron ملفات ~/.hermes/scripts/ فقط، لذا أضف غلافًا رقيقًا
-echo '#!/bin/bash' > ~/.hermes/scripts/oci_billing_report.sh
+echo '#!/bin/bash' &gt; ~/.hermes/scripts/oci_billing_report.sh
 echo 'exec python3 /home/ubuntu/oci-billing/oci_billing_report.py' &gt;&gt; ~/.hermes/scripts/oci_billing_report.sh
 chmod +x ~/.hermes/scripts/oci_billing_report.sh
 
@@ -751,12 +770,12 @@ hermes cron run &lt;job_id&gt;</div>
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.5 أين تُكتب الحدود (مرة واحدة)</h3>
 <p style="font-size:13px;color:var(--dim)">الحدود قيم <b>رسمية ثابتة</b> (مقام فقط) — اجعلها ثوابت في أعلى السكربت؛ أما الاستهلاك فدائمًا مباشر من الـ API:</p>
 <div class="cmd">LIMITS = {
-    "arm_ocpu": 3000.0,    # ساعات OCPU/شهر (حسابات Always Free: 1500)
-    "arm_mem":  18000.0,   # ساعات GB/شهر  (حسابات Always Free: 9000)
-    "egress":   10240.0,   # GB/شهر (10TB، متطابق للنوعين)
-    "block":    200.0,     # إجمالي GB (متطابق للنوعين)
+    "arm_ocpu": 3000.0,  # ساعات OCPU/شهر (حسابات Always Free: 1500)
+    "arm_mem":  18000.0,  # ساعات GB/شهر  (حسابات Always Free: 9000)
+    "egress":   10240.0,  # GB/شهر (10TB، متطابق للنوعين)
+    "block":    200.0,  # إجمالي GB (متطابق للنوعين)
 }
-WARN_PCT = 90.0            # تنبيه عند تجاوز التوقّع 90%</div>
+WARN_PCT = 90.0  # تنبيه عند تجاوز التوقّع 90%</div>
 <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
   <li>حساب <b>Always Free</b>: حد A1 هو 1,500 ساعة OCPU + 9,000 ساعة GB شهريًا (منذ 2026-06-15)</li>
   <li>حساب <b>PAYG</b>: أكّد دعم Oracle كتابيًا (2026-08-03) أنه <b>غير متأثر</b> بالتنصيف → 3,000 + 18,000 (انظر §15)</li>
@@ -815,12 +834,13 @@ WARN_PCT = 90.0            # تنبيه عند تجاوز التوقّع 90%</di
 <div class="link-row"><span class="label">دليل هيرميس</span><a href="https://forumdata-collab.github.io/hermes-mp3-guide/">دليل تحميل الموسيقى وكيل هيرميس</a></div>
 <div class="link-row"><span class="label">دليل قوات التحالف</span><a href="https://forumdata-collab.github.io/hermes-cf-guide/">وكيل هيرميس × الدليل التكميلي Cloudflare AI</a></div>
 <div class="link-row"><span class="label">الإنترنت العلمي</span><a href="https://forumdata-collab.github.io/hermes-gfw-guide/">ممارسة الإنترنت العلمي Oracle VM + Cloudflare ثنائي القناة</a></div>
+<div class="link-row"><span class="label">مزامنة Quark Drive مع Google Drive 101</span><a href="https://forumdata-collab.github.io/quark-gdrive-sync-guide/" target="_blank">quark-gdrive-sync-guide ↗</a></div>
 </div>
 <div class="footer">
 <a href="https://github.com/forumdata-collab" target="_blank">جيثب</a>· جميعها تم اختبارها شخصيًا · لقد تم تجاوز جميع المزالق من أجلك
     · بحوث النوس</div>
 </div>
-<div style="text-align:center;padding:28px 20px 40px;margin-top:40px;border-top:1px solid var(--border,rgba(255,255,255,.08));background:var(--card,#171e2e);color:var(--dim,#93a0bd);font-size:13px"><p style="margin:0 0 14px">鍾意呢份指南？請我飲杯咖啡 ☕</p><a href="https://ko-fi.com/forumdata" target="_blank" style="display:inline-flex;align-items:center;gap:10px;padding:12px 28px;background:#ff5e5b;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.47.06 8.529-1.723 8.649-4.916zm-11.638 8.978c-2.252 0-4.078-1.826-4.078-4.078s1.826-4.078 4.078-4.078 4.078 1.826 4.078 4.078-4.078 4.078z"/></svg>☕ 請我喝杯咖啡</a></div>
+<div style="text-align:center;padding:28px 20px 40px;margin-top:40px;border-top:1px solid var(--border,rgba(255,255,255,.08));background:var(--card,#171e2e);color:var(--dim,#93a0bd);font-size:13px"><p style="margin:0 0 14px">هل أعجبك هذا الدليل؟ اشترِ لي قهوة ☕</p><a href="https://ko-fi.com/forumdata" target="_blank" style="display:inline-flex;align-items:center;gap:10px;padding:12px 28px;background:#ff5e5b;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.47.06 8.529-1.723 8.649-4.916zm-11.638 8.978c-2.252 0-4.078-1.826-4.078-4.078s1.826-4.078 4.078-4.078 4.078 1.826 4.078 4.078-4.078 4.078z"/></svg>☕ اشترِ لي قهوة</a></div>
 <button id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;right:22px;bottom:22px;width:46px;height:46px;border-radius:50%;border:none;background:var(--accent,#6c8cff);color:#fff;font-size:20px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.35);z-index:99;display:none" aria-label="العودة للأعلى">↑</button>
 <script>(function(){var b=document.getElementById('topBtn');window.addEventListener('scroll',function(){b.style.display=window.scrollY>600?'block':'none'});})();</script>
 </body>
