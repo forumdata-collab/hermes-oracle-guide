@@ -135,6 +135,7 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 <a href="#webui">13WebUI</a>
 <a href="#backup">14 صيانة النسخ الاحتياطي</a>
 <a href="#freetier2026">15 تخفيض الطبقة المجانية</a>
+<a href="#usageapi">16 مراقبة الاستهلاك والفاتورة</a>
 </div>
 0. الهندسة المعمارية
 <div class="section" id="arch">
@@ -654,6 +655,114 @@ scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
     </table>
   </div>
   <p style="font-size:12px;color:var(--dim)">💡 ملاحظة GFW: عناوين IP لمراكز بيانات Oracle/Contabo تميل للحظر مع الوقت؛ REALITY يقاوم الفحص النشط؛ CF Worker (edgetunnel) قناة احتياطية مجانية.</p>
+</div>
+
+<!-- 16. مراقبة الطبقة المجانية + تقرير الفاتورة اليومي -->
+<div class="section" id="usageapi">
+<h2 class="section-title"><span class="num">16</span> مراقبة الطبقة المجانية + تقرير الفاتورة اليومي (OCI Usage API)</h2>
+<p class="section-desc">لن تُخبرك Oracle بمقدار ما استهلكته من الحد المجاني — عادةً تكتشف ذلك عند ظهور رسوم. في هذا القسم نسحب الاستهلاك الحقيقي من <b>Usage API</b> الرسمي كل يوم، ونتوقّع نهاية الشهر، وننبّه عند تجاوز 90%، ثم يرسله Hermes إلى Telegram. كل الأرقام مباشرة من الـ API وليست مكتوبة يدويًا.</p>
+
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.1 تثبيت OCI CLI ومفتاح API</h3>
+<div class="cmd">bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)"
+~/bin/oci setup config   # تفاعلي: Tenancy OCID / User OCID / Region / توليد المفاتيح</div>
+<p style="font-size:13px;color:var(--dim)">ثم من الـ Console: الصورة الرمزية (أعلى اليمين) → <b>My profile → API keys → Add API key</b> → الصق محتوى <code>~/.oci/oci_api_key_public.pem</code>. وسجّل <b>Tenancy OCID</b> — فهو قيمة <code>--tenant-id</code> أدناه. بعد ذلك تقرأ كل الاستعلامات <code>~/.oci/config</code> مباشرة دون تسجيل دخول.</p>
+<div class="tip red" style="margin-top:8px"><b>الوثائق مقابل الواقع:</b> في هذه النسخة من الـ CLI لا وجود لـ <code>oci limits</code> / <code>oci iam limit*</code>، لذا لا يمكن قراءة الحد المجاني من quota API — استخرجها من Usage API أدناه.</div>
+
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎16.2 الأمران الأساسيان (مُختبران؛ الوثائق ناقصة)</h3>
+<div class="cmd">TENANCY=ocid1.tenancy.oc1..xxxx          # معرّف Tenancy الخاص بك
+S=$(date -d "$(date +%Y-%m-01)" +%Y-%m-%d)   # أول يوم من الشهر
+E=$(date -d tomorrow +%Y-%m-%d)
+
+# (1) التكلفة (منذ بداية الشهر / الأمس)
+~/bin/oci usage-api usage-summary request-summarized-usages \
+  --tenant-id $TENANCY \
+  --time-usage-started ${S}T00:00:00Z --time-usage-ended ${E}T00:00:00Z \
+  --granularity MONTHLY --query-type COST --output json
+
+# (2) استهلاك الطبقة المجانية (مجمّع حسب service + skuName)
+~/bin/oci usage-api usage-summary request-summarized-usages \
+  --tenant-id $TENANCY \
+  --time-usage-started ${S}T00:00:00Z --time-usage-ended ${E}T00:00:00Z \
+  --granularity MONTHLY --query-type USAGE \
+  --group-by '["service","skuName"]' --output json</div>
+<div class="table-wrap">
+  <table>
+    <tr><th>صف الـ API (service · skuName)</th><th>مقياس الطبقة المجانية</th><th>الوحدة</th></tr>
+    <tr><td><code>Compute</code> · <code>Standard - A1</code></td><td>معالج ARM</td><td>OCPU·ساعة</td></tr>
+    <tr><td><code>Compute</code> · <code>Standard - A1 - Memory</code></td><td>ذاكرة ARM</td><td>GB·ساعة</td></tr>
+    <tr><td><code>Block Storage</code> · <code>Block Volume - Free</code></td><td>إجمالي التخزين</td><td>GB</td></tr>
+    <tr><td><code>Virtual Cloud Network</code> · <code>Outbound Data Transfer*</code></td><td>الحركة الصادرة</td><td>GB</td></tr>
+  </table>
+</div>
+<div class="tip red" style="margin-top:12px">
+  <b>⚠️ ثلاث مصائد مُختبرة:</b>
+  <ul style="margin:8px 0 0 18px">
+    <li>المسار الصحيح هو <code>usage-api usage-summary request-summarized-usages</code>. أما <code>usage-api request-summarized-usages</code> و<code>usage-api query ...</code> (للاستعلامات المحفوظة فقط) فيعطيان <code>Error: No such command</code>.</li>
+    <li>عندما لا يجد <code>oci ... list</code> شيئًا فإنه يعيد <b>rc=0 مع stdout فارغ تمامًا</b> (وليس <code>{"data": []}</code>) → يفشل <code>json.loads</code>. تعامل معه بـ <code>if not out: return {"data": []}</code>.</li>
+    <li>الكلمة المفتاحية <code>Standard - A1</code> تطابق أيضًا صف الذاكرة → <b>ساعات OCPU = qty("A1") − qty("A1 - Memory")</b>، وإلا تضاعف الرقم.</li>
+  </ul>
+</div>
+
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.3 الربط مع Hermes: إرسال يومي إلى Telegram عند 08:00</h3>
+<div class="cmd"># 1) سكربت التقرير (ما يطبعه stdout هو نص رسالة Telegram)
+nano /home/ubuntu/oci-billing/oci_billing_report.py
+
+# 2) يقبل Hermes cron ملفات ~/.hermes/scripts/ فقط، لذا أضف غلافًا رقيقًا
+echo '#!/bin/bash' > ~/.hermes/scripts/oci_billing_report.sh
+echo 'exec python3 /home/ubuntu/oci-billing/oci_billing_report.py' &gt;&gt; ~/.hermes/scripts/oci_billing_report.sh
+chmod +x ~/.hermes/scripts/oci_billing_report.sh
+
+# 3) أنشئ مهمة no_agent (بدون أي توكنات LLM؛ يُرسل stdout كما هو)
+hermes cron create "0 8 * * *" --name "OCI daily billing report" \
+  --script oci_billing_report.sh --no-agent --deliver origin
+
+# 4) شغّلها مرة الآن
+hermes cron run &lt;job_id&gt;</div>
+<p style="font-size:13px;color:var(--dim)"><code>--no-agent</code> يعني عدم استدعاء أي LLM — يُرسل stdout كما هو، و<b>stdout الفارغ لا يرسل شيئًا</b> (نمط watchdog). غيّر الموعد بتعديل تعبير cron، مثل <code>"30 7 * * 1"</code> = كل اثنين 07:30. crontab النظام يكفي أيضًا، لكن <code>hermes cron</code> يضيف سجل تنفيذ وإشعارات فشل.</p>
+
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎16.4 مخرجات حقيقية (أوساكا A1 · 4 OCPU / 24GB · PAYG)</h3>
+<div class="cmd">-- تقرير فاتورة Oracle OCI اليومي --
+📅 2026-09-16 · أوساكا ap-osaka-1
+
+-- 💰 التكلفة (HKD) --
+الأمس: 0.00
+هذا الشهر: 0.00
+
+-- 🎁 استهلاك الطبقة المجانية هذا الشهر --
+معالج ARM: 1,484.0 / 3,000 OCPU·ساعة (49%)
+ذاكرة ARM: 8,904.0 / 18,000 GB·ساعة (49%)
+الحركة الصادرة: 53.6 / 10,240 GB (1%)
+التخزين: 85.7 / 200 GB (43%)
+
+-- 📈 توقّع نهاية الشهر (حتى 30 سبتمبر) --
+معالج ARM: ~2,782.5 / 3,000 OCPU·ساعة (93%)
+ذاكرة ARM: ~16,695.0 / 18,000 GB·ساعة (93%)
+⚠️ قريب من الحد: معالج ARM، ذاكرة ARM
+
+-- 🖥️ الأجهزة --
+قيد التشغيل: 1
+  · instance-20260508-2242 · VM.Standard.A1.Flex 4.0 OCPU / 24.0 GB
+
+-- 💡 ما زال متاحًا --
+أجهزة AMD الصغيرة: يمكن إنشاء 2 (E2.1.Micro · 1/8 نواة / 1GB)
+قواعد البيانات المستقلة: 2 غير مستخدمة
+موازنات الحمل: 1 غير مستخدم</div>
+
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.5 أين تُكتب الحدود (مرة واحدة)</h3>
+<p style="font-size:13px;color:var(--dim)">الحدود قيم <b>رسمية ثابتة</b> (مقام فقط) — اجعلها ثوابت في أعلى السكربت؛ أما الاستهلاك فدائمًا مباشر من الـ API:</p>
+<div class="cmd">LIMITS = {
+    "arm_ocpu": 3000.0,    # ساعات OCPU/شهر (حسابات Always Free: 1500)
+    "arm_mem":  18000.0,   # ساعات GB/شهر  (حسابات Always Free: 9000)
+    "egress":   10240.0,   # GB/شهر (10TB، متطابق للنوعين)
+    "block":    200.0,     # إجمالي GB (متطابق للنوعين)
+}
+WARN_PCT = 90.0            # تنبيه عند تجاوز التوقّع 90%</div>
+<ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
+  <li>حساب <b>Always Free</b>: حد A1 هو 1,500 ساعة OCPU + 9,000 ساعة GB شهريًا (منذ 2026-06-15)</li>
+  <li>حساب <b>PAYG</b>: أكّد دعم Oracle كتابيًا (2026-08-03) أنه <b>غير متأثر</b> بالتنصيف → 3,000 + 18,000 (انظر §15)</li>
+  <li>التوقّع = الاستهلاك الشهري ÷ يوم الشهر × عدد أيام الشهر (استقراء خطي) — تقريبي في الأيام الأولى، دقيق لاحقًا</li>
+  <li>خطوة تالية: أضف فحص <code>compute instance list</code> على <code>shape-config</code> للتحقق من مواصفات كل جهاز</li>
+</ul>
 </div>
 
 <div class="section" id="appendix">

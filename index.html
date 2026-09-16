@@ -139,6 +139,7 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
     <a href="#webui">13 WebUI</a>
     <a href="#backup">14 備份維護</a>
     <a href="#freetier2026">15 免費額度減半</a>
+    <a href="#usageapi">16 免費額度監控</a>
   </div>
 
   <!-- 0. 架構 -->
@@ -695,6 +696,116 @@ scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
   </div>
 
   <!-- 附錄 -->
+  <!-- 16. 免費額度監控 + 每日賬單推送 -->
+  <div class="section" id="usageapi">
+    <h2 class="section-title"><span class="num">16</span> 免費額度監控 + 每日賬單推送（OCI Usage API）</h2>
+    <p class="section-desc">Oracle <b>唔會</b>主動通知你額度用咗幾多 —— 通常等到出咗費用先發現。呢節用 OCI 官方 <b>Usage API</b> 每日自動拉「用咗幾多 + 月底預測」，過 90% 就響警報，再由 Hermes 推去 Telegram。所有數字即時由 API 拎，唔係人手填。</p>
+
+    <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.1 裝 OCI CLI + API Key</h3>
+    <div class="cmd">bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)"
+~/bin/oci setup config   # 互動：Tenancy OCID / User OCID / Region / 產生 keypair</div>
+    <p style="font-size:13px;color:var(--dim)">之後去 Console 右上頭像 → <b>My profile → API keys → Add API key</b> → 貼上 <code>~/.oci/oci_api_key_public.pem</code> 內容。順手記低 <b>Tenancy OCID</b>（就係下面 <code>--tenant-id</code> 要嘅值）。之後所有查詢直接讀 <code>~/.oci/config</code>，唔使再登入。</p>
+    <div class="tip red" style="margin-top:8px"><b>文件 vs 現實：</b>呢個 CLI 版本 <code>oci limits</code> / <code>oci iam limit*</code> <b>唔存在</b>，免費額度唔可以靠 quota API 查 —— 要用下面嘅 Usage API 反推。</div>
+
+    <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎16.2 兩條關鍵命令（實測，官網文件唔齊）</h3>
+    <div class="cmd">TENANCY=ocid1.tenancy.oc1..xxxx          # 你嘅 Tenancy OCID
+S=$(date -d "$(date +%Y-%m-01)" +%Y-%m-%d)   # 本月 1 號
+E=$(date -d tomorrow +%Y-%m-%d)
+
+# ① 費用（本月 / 昨日）
+~/bin/oci usage-api usage-summary request-summarized-usages \
+  --tenant-id $TENANCY \
+  --time-usage-started ${S}T00:00:00Z --time-usage-ended ${E}T00:00:00Z \
+  --granularity MONTHLY --query-type COST --output json
+
+# ② 免費額度用量（按 service + skuName 分組）
+~/bin/oci usage-api usage-summary request-summarized-usages \
+  --tenant-id $TENANCY \
+  --time-usage-started ${S}T00:00:00Z --time-usage-ended ${E}T00:00:00Z \
+  --granularity MONTHLY --query-type USAGE \
+  --group-by '["service","skuName"]' --output json</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>API 回傳（service · skuName）</th><th>對應免費額度</th><th>單位</th></tr>
+        <tr><td><code>Compute</code> · <code>Standard - A1</code></td><td>ARM 運算</td><td>OCPU·時</td></tr>
+        <tr><td><code>Compute</code> · <code>Standard - A1 - Memory</code></td><td>ARM 記憶體</td><td>GB·時</td></tr>
+        <tr><td><code>Block Storage</code> · <code>Block Volume - Free</code></td><td>塊存總量</td><td>GB</td></tr>
+        <tr><td><code>Virtual Cloud Network</code> · <code>Outbound Data Transfer*</code></td><td>出站流量</td><td>GB</td></tr>
+      </table>
+    </div>
+    <div class="tip red" style="margin-top:12px">
+      <b>⚠️ 三個實測坑：</b>
+      <ul style="margin:8px 0 0 18px">
+        <li>正確路徑係 <code>usage-api usage-summary request-summarized-usages</code>。寫 <code>usage-api request-summarized-usages</code> 或者 <code>usage-api query ...</code>（後者只管 saved query）一律 <code>Error: No such command</code>。</li>
+        <li><code>oci ... list</code> 冇結果時係 <b>rc=0 + stdout 完全空白</b>（唔係 <code>{"data": []}</code>）→ <code>json.loads</code> 直接炸。helper 要 <code>if not out: return {"data": []}</code>。</li>
+        <li>關鍵字 <code>Standard - A1</code> 會連記憶體條目一齊中 → <b>OCPU·時 = qty("A1") − qty("A1 - Memory")</b>，唔減就會大咗一倍。</li>
+      </ul>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.3 接上 Hermes：每日 08:00 自動推 Telegram</h3>
+    <div class="cmd"># 1) 報告 script（印出嘅 stdout 就係 Telegram 訊息內容）
+nano /home/ubuntu/oci-billing/oci_billing_report.py
+
+# 2) Hermes cron 只認 ~/.hermes/scripts/ 下面嘅檔，所以要一個 thin wrapper
+echo '#!/bin/bash' > ~/.hermes/scripts/oci_billing_report.sh
+echo 'exec python3 /home/ubuntu/oci-billing/oci_billing_report.py' &gt;&gt; ~/.hermes/scripts/oci_billing_report.sh
+chmod +x ~/.hermes/scripts/oci_billing_report.sh
+
+# 3) 建立 no_agent job（零 token，script stdout 直接送出）
+hermes cron create "0 8 * * *" --name "OCI 賬單日報" \
+  --script oci_billing_report.sh --no-agent --deliver origin
+
+# 4) 即刻試一次（唔等明早）
+hermes cron run &lt;job_id&gt;</div>
+    <p style="font-size:13px;color:var(--dim)"><code>--no-agent</code> = 唔叫 LLM，script 印咩就送咩（<b>stdout 空白 = 靜默唔發</b>，適合 watchdog）；想改時間就改 cron 表達式，例如 <code>"30 7 * * 1"</code> = 逢星期一 07:30。系統 crontab 都做到同一件事，但 <code>hermes cron</code> 多咗執行紀錄同失敗通知。</p>
+
+    <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎16.4 實測輸出（大阪 A1 · 4 OCPU / 24GB · PAYG）</h3>
+    <div class="cmd">-- 甲骨文 OCI 賬單日報 --
+📅 2026-09-16 · 大阪 ap-osaka-1
+
+-- 💰 費用 (HKD) --
+昨日: 0.00
+本月: 0.00
+
+-- 🎁 本月免費額度用量 --
+ARM 計算: 1,484.0 / 3,000 OCPU·時 (49%)
+ARM 內存: 8,904.0 / 18,000 GB·時 (49%)
+出站流量: 53.6 / 10,240 GB (1%)
+塊存: 85.7 / 200 GB (43%)
+
+-- 📈 月底預測 (至 9月30日) --
+ARM 計算: ~2,782.5 / 3,000 OCPU·時 (93%)
+ARM 內存: ~16,695.0 / 18,000 GB·時 (93%)
+出站流量: ~100.5 / 10,240 GB (1%)
+塊存: ~160.7 / 200 GB (80%)
+⚠️ 接近上限: ARM 計算, ARM 內存
+
+-- 🖥️ 實例 --
+運行中: 1 台
+  · instance-20260508-2242 · VM.Standard.A1.Flex 4.0 OCPU / 24.0 GB
+
+-- 💡 免費額度還能用 --
+AMD 小實例: 仲可開 2 台 (E2.1.Micro · 1/8 核 / 1GB)
+自治數據庫: 2 個未用
+負載均衡: 1 個未用</div>
+
+    <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.5 免費上限寫喺邊（設定一次）</h3>
+    <p style="font-size:13px;color:var(--dim)">上限係<b>官方固定值</b>（只做分母），寫喺 script 頂部常數就得；用量本身永遠係 API live 數字：</p>
+    <div class="cmd">LIMITS = {
+    "arm_ocpu": 3000.0,    # OCPU·時/月（Always Free 戶請改 1500）
+    "arm_mem":  18000.0,   # GB·時/月（Always Free 戶請改 9000）
+    "egress":   10240.0,   # GB/月（10TB，兩種帳戶一樣）
+    "block":    200.0,     # GB 總量（兩種帳戶一樣）
+}
+WARN_PCT = 90.0            # 月底預測達 90% → 出警告</div>
+    <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
+      <li><b>Always Free</b> tenancy：A1 額度 1,500 OCPU·時 + 9,000 GB·時/月（2026-06-15 起）</li>
+      <li><b>PAYG</b>：官方 2026-08-03 書面確認<b>唔受減半影響</b> → 3,000 + 18,000（見 §15）</li>
+      <li>月底預測 = 本月累計 ÷ 今日日期 × 當月日數（線性外推）—— 月頭幾日誤差較大，月中之後好準</li>
+      <li>進階：想連 Docker / Hermes 堆疊都一齊監，可以加多一節查 <code>compute instance list</code> 嘅 <code>shape-config</code>，核對實例規格同免費上限</li>
+    </ul>
+  </div>
+
   <div class="section" id="appendix">
     <h2 class="section-title"><span class="num p-icon">附</span> 附錄：檔案路徑 + 資源限制 + 完成清單</h2>
 

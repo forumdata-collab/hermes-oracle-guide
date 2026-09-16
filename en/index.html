@@ -135,6 +135,7 @@ Directory
 <a href="#webui">13WebUI</a>
 <a href="#backup">14 Backup maintenance</a>
 <a href="#freetier2026">15 Free tier halved</a>
+<a href="#usageapi">16 Usage &amp; billing monitor</a>
 </div>
 0. Architecture
 <div class="section" id="arch">
@@ -654,6 +655,114 @@ Appendix
     </table>
   </div>
   <p style="font-size:12px;color:var(--dim)">💡 GFW note: Oracle/Contabo datacenter IPs tend to get blocked over time; REALITY resists active probing; a CF Worker (edgetunnel) is a free backup channel.</p>
+</div>
+
+<!-- 16. Free-tier monitoring + daily billing push -->
+<div class="section" id="usageapi">
+<h2 class="section-title"><span class="num">16</span> Free-tier monitoring + daily billing push (OCI Usage API)</h2>
+<p class="section-desc">Oracle will <b>not</b> tell you how much of your free allowance you have burned — you usually find out when a charge appears. This section pulls your real usage from the official <b>Usage API</b> every day, projects it to month-end, warns past 90%, and lets Hermes push it to Telegram. Every number is live from the API — nothing hand-typed.</p>
+
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.1 Install the OCI CLI + API key</h3>
+<div class="cmd">bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)"
+~/bin/oci setup config   # interactive: Tenancy OCID / User OCID / Region / generate keypair</div>
+<p style="font-size:13px;color:var(--dim)">Then in the Console: avatar (top right) → <b>My profile → API keys → Add API key</b> → paste the contents of <code>~/.oci/oci_api_key_public.pem</code>. Note your <b>Tenancy OCID</b> — that is the <code>--tenant-id</code> below. Every query afterwards just reads <code>~/.oci/config</code>; no login needed.</p>
+<div class="tip red" style="margin-top:8px"><b>Docs vs reality:</b> in this CLI version <code>oci limits</code> / <code>oci iam limit*</code> <b>do not exist</b>, so you cannot query free-tier quota from a quota API — derive it from the Usage API below instead.</div>
+
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎16.2 The two commands that matter (verified; the docs are incomplete)</h3>
+<div class="cmd">TENANCY=ocid1.tenancy.oc1..xxxx          # your Tenancy OCID
+S=$(date -d "$(date +%Y-%m-01)" +%Y-%m-%d)   # 1st of this month
+E=$(date -d tomorrow +%Y-%m-%d)
+
+# (1) Cost (month-to-date / yesterday)
+~/bin/oci usage-api usage-summary request-summarized-usages \
+  --tenant-id $TENANCY \
+  --time-usage-started ${S}T00:00:00Z --time-usage-ended ${E}T00:00:00Z \
+  --granularity MONTHLY --query-type COST --output json
+
+# (2) Free-tier consumption (grouped by service + skuName)
+~/bin/oci usage-api usage-summary request-summarized-usages \
+  --tenant-id $TENANCY \
+  --time-usage-started ${S}T00:00:00Z --time-usage-ended ${E}T00:00:00Z \
+  --granularity MONTHLY --query-type USAGE \
+  --group-by '["service","skuName"]' --output json</div>
+<div class="table-wrap">
+  <table>
+    <tr><th>API row (service · skuName)</th><th>Free-tier metric</th><th>Unit</th></tr>
+    <tr><td><code>Compute</code> · <code>Standard - A1</code></td><td>ARM compute</td><td>OCPU hrs</td></tr>
+    <tr><td><code>Compute</code> · <code>Standard - A1 - Memory</code></td><td>ARM memory</td><td>GB hrs</td></tr>
+    <tr><td><code>Block Storage</code> · <code>Block Volume - Free</code></td><td>Block storage total</td><td>GB</td></tr>
+    <tr><td><code>Virtual Cloud Network</code> · <code>Outbound Data Transfer*</code></td><td>Egress</td><td>GB</td></tr>
+  </table>
+</div>
+<div class="tip red" style="margin-top:12px">
+  <b>⚠️ Three verified traps:</b>
+  <ul style="margin:8px 0 0 18px">
+    <li>The real path is <code>usage-api usage-summary request-summarized-usages</code>. <code>usage-api request-summarized-usages</code> and <code>usage-api query ...</code> (saved queries only) both give <code>Error: No such command</code>.</li>
+    <li>When <code>oci ... list</code> finds nothing it returns <b>rc=0 with completely empty stdout</b> (not <code>{"data": []}</code>) → <code>json.loads</code> blows up. Handle it with <code>if not out: return {"data": []}</code>.</li>
+    <li>The keyword <code>Standard - A1</code> also matches the memory row → <b>OCPU hrs = qty("A1") − qty("A1 - Memory")</b>, otherwise your compute figure is doubled.</li>
+  </ul>
+</div>
+
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.3 Wire it into Hermes: push to Telegram daily at 08:00</h3>
+<div class="cmd"># 1) The report script (whatever it prints on stdout IS the Telegram message)
+nano /home/ubuntu/oci-billing/oci_billing_report.py
+
+# 2) Hermes cron only accepts files under ~/.hermes/scripts/, so add a thin wrapper
+echo '#!/bin/bash' > ~/.hermes/scripts/oci_billing_report.sh
+echo 'exec python3 /home/ubuntu/oci-billing/oci_billing_report.py' &gt;&gt; ~/.hermes/scripts/oci_billing_report.sh
+chmod +x ~/.hermes/scripts/oci_billing_report.sh
+
+# 3) Create a no_agent job (zero tokens; stdout is delivered verbatim)
+hermes cron create "0 8 * * *" --name "OCI daily billing report" \
+  --script oci_billing_report.sh --no-agent --deliver origin
+
+# 4) Fire it once now (no need to wait for the morning)
+hermes cron run &lt;job_id&gt;</div>
+<p style="font-size:13px;color:var(--dim)"><code>--no-agent</code> means no LLM is called — stdout goes out as-is, and <b>empty stdout sends nothing</b> (the classic watchdog shape). Change the schedule by editing the cron expression, e.g. <code>"30 7 * * 1"</code> = Mondays 07:30. Plain system crontab works too, but <code>hermes cron</code> adds run history and failure notices.</p>
+
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎16.4 Real output (Osaka A1 · 4 OCPU / 24GB · PAYG)</h3>
+<div class="cmd">-- Oracle OCI daily billing report --
+📅 2026-09-16 · Osaka ap-osaka-1
+
+-- 💰 Cost (HKD) --
+Yesterday: 0.00
+Month to date: 0.00
+
+-- 🎁 Free-tier used this month --
+ARM compute: 1,484.0 / 3,000 OCPU hrs (49%)
+ARM memory: 8,904.0 / 18,000 GB hrs (49%)
+Egress: 53.6 / 10,240 GB (1%)
+Block storage: 85.7 / 200 GB (43%)
+
+-- 📈 Month-end projection (to Sep 30) --
+ARM compute: ~2,782.5 / 3,000 OCPU hrs (93%)
+ARM memory: ~16,695.0 / 18,000 GB hrs (93%)
+⚠️ Close to limit: ARM compute, ARM memory
+
+-- 🖥️ Instances --
+Running: 1
+  · instance-20260508-2242 · VM.Standard.A1.Flex 4.0 OCPU / 24.0 GB
+
+-- 💡 Still available --
+AMD micro instances: 2 left (E2.1.Micro · 1/8 OCPU / 1GB)
+Autonomous DBs: 2 unused
+Load balancers: 1 unused</div>
+
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎16.5 Where the caps live (set once)</h3>
+<p style="font-size:13px;color:var(--dim)">The caps are <b>official fixed values</b> (denominators only) — keep them as constants at the top of the script; the usage side is always live API data:</p>
+<div class="cmd">LIMITS = {
+    "arm_ocpu": 3000.0,    # OCPU hrs/month (Always Free tenancies: 1500)
+    "arm_mem":  18000.0,   # GB hrs/month  (Always Free tenancies: 9000)
+    "egress":   10240.0,   # GB/month (10TB, same for both account types)
+    "block":    200.0,     # GB total  (same for both account types)
+}
+WARN_PCT = 90.0            # warn when the month-end projection passes 90%</div>
+<ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
+  <li><b>Always Free</b> tenancy: A1 allowance is 1,500 OCPU hrs + 9,000 GB hrs/month (since 2026-06-15)</li>
+  <li><b>PAYG</b>: confirmed in writing by Oracle Support (2026-08-03) to be <b>unaffected</b> by the halving → 3,000 + 18,000 (see §15)</li>
+  <li>Projection = month-to-date ÷ day-of-month × days-in-month (linear). Rough in the first days, accurate later in the month.</li>
+  <li>Next step: add a <code>compute instance list</code> check on <code>shape-config</code> so the report also verifies each instance's shape against the free caps.</li>
+</ul>
 </div>
 
 <div class="section" id="appendix">
