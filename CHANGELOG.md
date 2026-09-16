@@ -11,6 +11,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
   (`og:locale`, `og:locale:alternate`, `og:url`, `og:title`, `og:description`) on every language.
 
 ### Changed
+- §14.2 now warns that an `apt upgrade` of docker-ce/containerd restarts the Docker daemon and
+  can silently take a container DNS/proxy stack down; lists the three post-upgrade checks.
 - Table of contents grouped into three collapsible stages (Getting started / Deploy /
   Advanced & ops) and now includes the appendix.
 - Sub-heading numbering unified: `▎15.1`–`▎15.6` (§15) and `▎A.1`–`▎A.3` (appendix).

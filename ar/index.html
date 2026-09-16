@@ -635,6 +635,7 @@ scp ubuntu@&lt;your public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
 <tr><td>كل 3-6 أشهر</td><td>تدوير مفتاح API، والتحقق من سلامة محرك الأقراص/النسخ الاحتياطي عن بعد</td></tr>
 </table>
 </div>
+<div class="tip red" style="margin-top:12px"><b>⚠️ لا تفترض أن تحديث apt "آمن":</b> ترقية <code>docker-ce</code> / <code>containerd</code> تعيد تشغيل خدمة Docker، فتُعاد جميع الحاويات. قياس فعلي (2026-09-16): أثناء إعادة التشغيل لم تستطع Pi-hole ربط منفذها فتوقفت بصمت، وسقطت معها كل مصافحات الوكيل — وأظهر العملاء "المنفذ غير مفتوح" مع أن 443 و853 كانتا تستمعان. بعد أي ترقية تحقّق من ثلاثة أمور: <code>docker ps</code> لكل الحاويات، و<code>systemctl status sing-box</code>، واتصال حقيقي بالوكيل (انظر §16).</div>
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎14.3 توصيات السلامة</h3>
 <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
 <li>تحديث حزمة النظام بانتظام؛ بعد تحديث النواة<code>sudo reboot</code></li>

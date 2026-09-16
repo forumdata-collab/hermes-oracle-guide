@@ -668,6 +668,7 @@ scp ubuntu@&lt;Public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
         <tr><td>每 3-6 個月</td><td>rotation API Key、檢查 Drive/遠端備份完整性</td></tr>
       </table>
     </div>
+      <div class="tip red" style="margin-top:12px"><b>⚠️ 唔好當 apt 升級「一定安全」：</b>升級 <code>docker-ce</code> / <code>containerd</code> 會重啟 Docker daemon，所有容器一齊 bounce。實測（2026-09-16）：daemon 重啟時 Pi-hole 綁唔到 host port，靜靜死掉 → 依賴佢做 DNS 嘅代理全部 handshake 失敗，客戶端顯示「port 沒開」，其實 443／853 一直有聽。升級後必驗三樣：<code>docker ps</code> 容器齊唔齊、<code>systemctl status sing-box</code>、真係連一次代理（見 §16 監控寫法）。</div>
 
     <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎14.3 安全建議</h3>
     <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">

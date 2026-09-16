@@ -631,6 +631,7 @@ scp ubuntu@&lt;your public IP&gt;:~/hermes-backup-*.tar.gz ./</div>
 <tr><td>every 3-6 months</td><td>rotation API Key, check Drive/remote backup integrity</td></tr>
 </table>
 </div>
+<div class="tip red" style="margin-top:12px"><b>⚠️ Never assume an apt upgrade is "safe":</b> upgrading <code>docker-ce</code> / <code>containerd</code> restarts the Docker daemon, which bounces every container. Measured 2026-09-16: during that restart Pi-hole could not rebind its host port and died silently, taking every proxy handshake with it — clients showed "port not open" while 443/853 were still listening. After any upgrade verify three things: <code>docker ps</code> lists every container, <code>systemctl status sing-box</code> is active, and actually connect through the proxy once (see §16 for the automated way).</div>
 <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎14.3 Safety recommendations</h3>
 <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
 <li>Regularly update the system package; after kernel update<code>sudo reboot</code></li>
