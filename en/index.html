@@ -97,6 +97,12 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 .toc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:32px}
 .toc a{font-size:12px;color:var(--dim);text-decoration:none;padding:4px 12px;border-radius:8px;border:1px solid var(--border);transition:all .2s}
 .toc a:hover{color:var(--text);border-color:rgba(255,255,255,0.15)}
+.toc-group{flex:0 0 100%;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+.toc-group>summary{flex:0 0 100%;text-align:center;cursor:pointer;list-style:none;font-size:11px;letter-spacing:.08em;color:var(--dim);opacity:.75;margin:2px 0 -2px}
+.toc-group>summary::-webkit-details-marker{display:none}
+.toc-group>summary::before{content:"▾ "}
+.toc-group:not([open])>summary::before{content:"▸ "}
+
 
 .arch-flow{display:flex;align-items:center;gap:10px;font-family:'SF Mono','Consolas',monospace;font-size:12px;color:var(--dim);flex-wrap:wrap;justify-content:center;margin-bottom:20px}
 .arch-flow span{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;white-space:nowrap}
@@ -129,29 +135,39 @@ td a{color:var(--accent);text-decoration:none} td a:hover{text-decoration:underl
 <div class="hero">
 <div class="hero-badge">Nous Research · MIT Open Source · 2026</div>
 <h1>How to deploy Hermes Agent on Oracle VM for free</h1>
-<p>OCI Free Tier ARM in practice · 2 vCPU / 12GB RAM Free forever (since 2026-06-15) · systemd running 24/7<br/>Zero-cost cloud AI Agent, all pitfalls have been eliminated for you</p>
-<div class="disclaimer">⚡ This guide is based on actual measurement on 2026-08-01. All resources must be maintained within the "Always Free" quota, and fees will be charged if they are exceeded.</div>
+<p>OCI Free Tier ARM in practice · Always Free 2 vCPU / 12GB RAM (since 2026-06-15) · <b>PAYG 4 OCPU / 24GB unaffected</b> (see §15) · systemd running 24/7<br/>Zero-cost cloud AI Agent, all pitfalls have been eliminated for you</p>
+<div class="disclaimer">⚡ This guide is continuously updated (latest measurement 2026-09). All resources must stay within the "Always Free" allowance or charges apply; PAYG tenancies are unaffected by the 2026-06-15 halving (see §15).</div>
 </div>
 Directory
-<div class="toc">
-<a href="#arch">0 architecture</a>
-<a href="#signup">1 Register an account</a>
-<a href="#vm">2 Create VM</a>
-<a href="#ssh">3 SSH initialization</a>
-<a href="#install">4 Install Hermes</a>
-<a href="#setup">5 Initialization settings</a>
-<a href="#api">6 Model API Key</a>
-<a href="#gateway">7 systemdGateway</a>
-<a href="#telegram">8 Telegram Bots</a>
-<a href="#soul">9 replies in Chinese</a>
-<a href="#firewall">10 firewall</a>
-<a href="#commands">11 Command Quick Check</a>
-<a href="#faq">12 Trampling Collection</a>
-<a href="#webui">13WebUI</a>
-<a href="#backup">14 Backup maintenance</a>
-<a href="#freetier2026">15 Free tier halved</a>
-<a href="#usageapi">16 Usage &amp; billing monitor</a>
-</div>
+  <div class="toc">
+    <details class="toc-group" open>
+      <summary>Getting started · 0–4</summary>
+      <a href="#arch">0 Architecture</a>
+      <a href="#signup">1 Register account</a>
+      <a href="#vm">2 Create VM</a>
+      <a href="#ssh">3 SSH setup</a>
+      <a href="#install">4 Install Hermes</a>
+    </details>
+    <details class="toc-group" open>
+      <summary>Deploy · 5–10</summary>
+      <a href="#setup">5 Initial setup</a>
+      <a href="#api">6 Model API key</a>
+      <a href="#gateway">7 systemd Gateway</a>
+      <a href="#telegram">8 Telegram bot</a>
+      <a href="#soul">9 Chinese replies</a>
+      <a href="#firewall">10 Firewall</a>
+    </details>
+    <details class="toc-group" open>
+      <summary>Advanced & ops · 11–16</summary>
+      <a href="#commands">11 Command reference</a>
+      <a href="#faq">12 Pitfalls</a>
+      <a href="#webui">13 WebUI</a>
+      <a href="#backup">14 Backup & maintenance</a>
+      <a href="#freetier2026">15 Free-tier halving</a>
+      <a href="#usageapi">16 Usage monitor</a>
+      <a href="#appendix">Appendix</a>
+    </details>
+  </div>
 0. Architecture
 <div class="section" id="arch">
 <h2 class="section-title"><span class="num">0</span>How to deploy (architecture overview)</h2>
@@ -165,7 +181,7 @@ Directory
 </div>
 <p style="font-size:13px;color:var(--dim);text-align:center;margin-bottom:20px">systemd service management: auto-start at boot, auto-restart after crash, and disconnect SSH all run as usual.</p>
 <div class="feature-grid">
-<div class="feature-card"><div class="f-icon">💰</div><h3>Free forever</h3><p>ARM 2 vCPU + 12GB RAM + 200GB disk (since 2026-06-15), no long-term credit card charges</p></div>
+<div class="feature-card"><div class="f-icon">💰</div><h3>Free forever</h3><p>ARM 2 vCPU + 12GB RAM + 200GB disk (Always Free, since 2026-06-15); PAYG keeps 4 OCPU / 24GB (see §15)</p></div>
 <div class="feature-card"><div class="f-icon">🔄</div><h3>Model freedom</h3><p>You can choose from DeepSeek / OpenAI / Anthropic / Google, just change the supplier and change the config.</p></div>
 <div class="feature-card"><div class="f-icon">💬</div><h3>Telegram native</h3><p>Built-in Gateway, a systemd service that automatically replies 24/7</p></div>
 <div class="feature-card"><div class="f-icon">🖥️</div><h3>Zero operational anxiety</h3><p>Automatic restart after crash + journald log + remote backup, you can’t even sleep.</p></div>
@@ -636,30 +652,30 @@ Appendix
       <tr><td>2 OCPU / 12GB (new)</td><td>1,460 OCPU-hrs + 8,760 GB-hrs</td><td><span class="badge ok">✅ Fits exactly</span></td></tr>
     </table>
   </div>
-  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎Pure free vs PAYG — different fates</h3>
+  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎15.1 Pure free vs PAYG — different fates</h3>
   <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
     <li><b>Pure free accounts</b>: over the cap → risk of forced instance termination (shrink to 2/12 to be safe)</li>
     <li><b>PAYG</b>: ✅ Official written confirmation (2026-08-03) — <b>not affected</b>; keep your existing 4 OCPU/24GB, no resize, no billing, no deadline</li>
   </ul>
   <div class="tip green">⚠️ Only caveat (acknowledged by Oracle): a <b>stopped</b> instance can be started again normally; but if it is <b>terminated</b>, recreating the same configuration depends on ARM capacity in Osaka at that time. Insurance in place: OCI boot volume backup + Drive off-site backup.</div>
-  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎Official policy text (key excerpts)</h3>
+  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎15.2 Official policy text (key excerpts)</h3>
   <p style="font-size:12px;color:var(--dim)">Source: <a href="https://docs.oracle.com/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm" target="_blank" style="color:var(--teal)">docs.oracle.com — Always Free Resources</a></p>
   <div style="background:var(--card);border-left:3px solid var(--teal);border-radius:0 10px 10px 0;padding:12px 16px;font-size:12px;color:var(--dim);margin:8px 0;line-height:1.8">"All tenancies get the first <b>1,500 OCPU hours and 9,000 GB hours</b> per month for free for VM instances using the VM."<br>"you can create one or two OCI Ampere A1 Compute instances, <b>2 OCPUs total</b>."</div>
-  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎Official support reply, verbatim (2026-08-03, PAYG inquiry)</h3>
+  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎15.3 Official support reply, verbatim (2026-08-03, PAYG inquiry)</h3>
   <div style="background:var(--card);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:12px 16px;font-size:12px;color:var(--dim);margin:8px 0;line-height:1.8">"Thank you for providing the details. Since your tenancy is a Pay As You Go (PAYG) account, you do not need to worry about the recent Always Free Ampere A1 resource limit update. Your existing 4 OCPU / 24 GB A1 instance does not need to be resized as a result of this policy change. You will not be billed for your existing 4 OCPU / 24 GB A1 instance solely because of the Always Free limit update. The reduction to 2 OCPUs / 12 GB RAM applies only to Always Free tenancies, not to PAYG accounts. There is no deadline requiring PAYG customers to resize existing A1 instances because of this change. If your instance is stopped, you can start it again normally. However, if it is terminated, the ability to recreate an instance with the same configuration depends on current capacity availability in your selected region. The reduction in the Always Free Ampere A1 allocation applies only to Always Free tenancies. PAYG and other paid tenancy types are not affected by this specific policy change. Based on the information available, your existing 4 OCPU / 24 GB A1 instance on your PAYG tenancy will continue to operate under the terms applicable to your paid account and will not incur charges solely because of this Always Free policy update."</div>
-  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎Community consensus (2026-07)</h3>
+  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎15.4 Community consensus (2026-07)</h3>
   <ul style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
     <li>Reddit r/selfhosted PSA (1.5K upvotes): "Resize by June 15 to avoid charges"</li>
     <li>Enforcement is inconsistent: many accounts still run 4/24 untouched; Oracle's price list still shows 3K/18K free</li>
     <li>⚠️ Biggest risk: ARM capacity shortage (many "insufficient capacity" reports) — if your instance terminates, you may not even be able to recreate 2/12</li>
   </ul>
-  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎Insurance (tested)</h3>
+  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎15.5 Insurance (tested)</h3>
   <ol style="margin:10px 0 10px 24px;font-size:13px;color:var(--dim)">
     <li><b>OCI Boot Volume Backup</b>: Console → Compute → Instance → Boot volume → Create backup (cloud-level full restore, ~10 min to Available)</li>
     <li><b>Drive off-site backup</b>: config tar.gz (~/.hermes, nginx, systemd, crontab) auto-uploaded daily → Google Drive (see §14)</li>
     <li><b>Don't stop the instance casually</b>: once terminated during the grandfather period, you may never get it back</li>
   </ol>
-  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎Alternatives (if Oracle falls apart)</h3>
+  <h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎15.6 Alternatives (if Oracle falls apart)</h3>
   <div class="table-wrap">
     <table>
       <tr><th>Need</th><th>Option</th><th>Cost</th></tr>
@@ -782,7 +798,7 @@ WARN_PCT = 90.0  # warn when the month-end projection passes 90%</div>
 
 <div class="section" id="appendix">
 <h2 class="section-title"><span class="num p-icon">attached</span>Appendix: File path + resource limit + completion list</h2>
-<h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎Overview of file paths</h3>
+<h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--teal)">▎A.1 Overview of file paths</h3>
 <div class="table-wrap">
 <table>
 <tr><th>path</th><th>Description</th></tr>
@@ -794,7 +810,7 @@ WARN_PCT = 90.0  # warn when the month-end projection passes 90%</div>
 <tr><td><code>/etc/systemd/system/hermes-gateway.service</code></td><td>Gateway systemd service file</td></tr>
 </table>
 </div>
-<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎OCI Always Free resource limit</h3>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--teal)">▎A.2 OCI Always Free resource limit</h3>
 <div class="table-wrap">
 <table>
 <tr><th>Resources</th><th>Limit</th></tr>
@@ -805,7 +821,7 @@ WARN_PCT = 90.0  # warn when the month-end projection passes 90%</div>
 <tr><td>Network bandwidth</td><td>1 Gbps per vCPU</td></tr>
 </table>
 </div>
-<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎Deployment completion checklist</h3>
+<h3 style="font-size:16px;font-weight:700;margin:22px 0 12px;color:var(--accent)">▎A.3 Deployment completion checklist</h3>
 <div class="table-wrap">
 <table>
 <tr><th>✅</th><th>Check items</th></tr>
